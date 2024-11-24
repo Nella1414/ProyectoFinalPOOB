@@ -1,6 +1,6 @@
 package presentation;
 
-import domain.*;
+import domain.Entities.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

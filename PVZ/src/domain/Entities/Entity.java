@@ -1,4 +1,4 @@
-package domain;
+package domain.Entities;
 
 import javax.swing.*;
 import java.awt.*;
