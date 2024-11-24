@@ -3,8 +3,8 @@ package presentation;
 import javax.swing.*;
 import java.awt.*;
 
-public class oneVsOne extends JFrame {
-    public oneVsOne() {
+public class Options extends JFrame {
+    public Options() {
         setTitle("One vs One");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

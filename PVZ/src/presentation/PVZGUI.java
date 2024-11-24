@@ -27,7 +27,8 @@ public class PVZGUI extends JFrame {
         imagePanel.setLayout(null); // Asegúrate de establecer el diseño nulo
 
         try {
-            BufferedImage originalImage = ImageIO.read(getClass().getClassLoader().getResource("Images/inGameFirstScreen/Button.png"));
+            BufferedImage button1 = ImageIO.read(getClass().getClassLoader().getResource("Images/inGameFirstScreen/Button2.png"));
+            BufferedImage button2 = ImageIO.read(getClass().getClassLoader().getResource("Images/inGameFirstScreen/Button3.png"));
             BufferedImage originalImage2 = ImageIO.read(getClass().getClassLoader().getResource("Images/inGameFirstScreen/InitGameButton.png"));
 
             // Panel transparente para manejar eventos de clic
@@ -42,13 +43,13 @@ public class PVZGUI extends JFrame {
             buttonPanel.add(startButton);
 
             // Segundo botón
-            JLabel secondButton = createLabel(originalImage, 510, 210, 355, 150);
-            secondButton.addMouseListener(createSecondButtonMouseListener(secondButton, originalImage));
+            JLabel secondButton = createLabel(button1, 510, 210, 355, 150);
+            secondButton.addMouseListener(createSecondButtonMouseListener(secondButton, button1));
             buttonPanel.add(secondButton);
 
             // Tercer botón
-            JLabel thirdButton = createLabel(originalImage, 515, 300, 330, 150);
-            thirdButton.addMouseListener(createThirdButtonMouseListener(thirdButton, originalImage));
+            JLabel thirdButton = createLabel(button2, 515, 300, 330, 150);
+            thirdButton.addMouseListener(createThirdButtonMouseListener(thirdButton, button2));
             buttonPanel.add(thirdButton);
 
         } catch (Exception e) {
@@ -87,7 +88,7 @@ public class PVZGUI extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, secondButton, image)) {
                     playClickSound("Sounds/2.Click.wav");
-                    animateButtonAndOpenWindow(secondButton, new oneVsOne());
+                    animateButtonAndOpenWindow(secondButton, new Options());
                 }
             }
         };

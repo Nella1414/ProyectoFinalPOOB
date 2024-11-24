@@ -6,7 +6,7 @@ import java.awt.*;
 public class GameModesWindow extends JFrame {
     public GameModesWindow() {
         setTitle("Game Modes");
-        setSize(1000, 625);
+        setSize(1000, 677);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
