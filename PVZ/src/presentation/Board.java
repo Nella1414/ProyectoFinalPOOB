@@ -14,6 +14,7 @@ import java.util.List;
 public class Board extends JFrame {
     private final String difficulty;
     private Entity selectedPlant = null;
+    private boolean isShovelSelected = false; // Variable to track if the shovel is selected
     private final int gridSize = 90; // Tamaño de cada cuadro de la grilla
     private final int minX = 450;
     private final int maxX = 1080;
@@ -86,22 +87,35 @@ public class Board extends JFrame {
             x += spacing; // Actualizar posición x para la siguiente planta
         }
 
-        // Añadir mouse listener al fondo para colocar plantas
+        // Añadir mouse listener al fondo para colocar plantas o eliminar plantas
         background.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (selectedPlant != null) {
-                    Point clickPoint = e.getPoint();
-                    int gridX = (clickPoint.x / gridSize) * gridSize;
-                    int gridY = (clickPoint.y / gridSize) * gridSize;
+                Point clickPoint = e.getPoint();
+                int gridX = (clickPoint.x / gridSize) * gridSize;
+                int gridY = (clickPoint.y / gridSize) * gridSize;
 
-                    if (gridX >= minX && gridX <= maxX && gridY >= minY && gridY <= maxY) {
+                if (gridX >= minX && gridX <= maxX && gridY >= minY && gridY <= maxY) {
+                    if (isShovelSelected) {
+                        // Remove plant if shovel is selected
+                        for (Entity entity : entities) {
+                            if (entity.getPosition().equals(new Point(gridX, gridY))) {
+                                entities.remove(entity);
+                                background.remove(getComponentAt(gridX + 20, gridY));
+                                background.repaint();
+                                System.out.println("Plant removed at: " + gridX + ", " + gridY);
+                                break;
+                            }
+                        }
+                        isShovelSelected = false; // Reset shovel selection
+                    } else if (selectedPlant != null) {
+                        // Add plant if a plant is selected
                         try {
                             Entity newPlant = selectedPlant.getClass().getConstructor(Point.class).newInstance(new Point(gridX, gridY));
                             entities.add(newPlant);
 
                             JLabel plantLabel = new JLabel(newPlant.getIcon());
-                            plantLabel.setBounds(gridX, gridY, newPlant.getIcon().getIconWidth(), newPlant.getIcon().getIconHeight());
+                            plantLabel.setBounds(gridX + 20, gridY, newPlant.getIcon().getIconWidth(), newPlant.getIcon().getIconHeight());
                             background.add(plantLabel);
                             background.setComponentZOrder(plantLabel, 0);
                             background.repaint(); // Ensure the panel is repainted
@@ -112,8 +126,10 @@ public class Board extends JFrame {
                             ex.printStackTrace();
                         }
                     } else {
-                        System.out.println("Click outside the allowed grid area.");
+                        System.out.println("No plant selected or shovel not selected.");
                     }
+                } else {
+                    System.out.println("Click outside the allowed grid area.");
                 }
             }
         });
@@ -149,6 +165,7 @@ public class Board extends JFrame {
             public void mousePressed(MouseEvent e) {
                 if (isPixelVisible(e, shovel, shovelButton)) {
                     System.out.println("Shovel clicked");
+                    isShovelSelected = true; // Set shovel as selected
                 }
             }
         };
@@ -218,13 +235,5 @@ class JpanelImage1 extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
-
-        // Dibujar la cuadrícula
-        g.setColor(Color.RED);
-        for (int i = 0; i < getWidth(); i += gridSize) {
-            for (int j = 0; j < getHeight(); j += gridSize) {
-                g.drawRect(i, j, gridSize, gridSize);
-            }
-        }
     }
 }
