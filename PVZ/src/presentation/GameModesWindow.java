@@ -6,8 +6,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -68,6 +68,28 @@ public class GameModesWindow extends JFrame {
         label.setForeground(Color.BLACK);
         label.setBounds(400, 250, 300, 30);
         background.add(label);
+
+        // Create a Back button with custom image
+        try {
+            BufferedImage backButtonImage = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/gameModesWindow/BackButton.png"));
+            JLabel backButton = createLabel(backButtonImage, 50, 50, 89, 26);
+            backButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    new PVZGUI().setVisible(true);
+                    GameModesWindow.this.dispose();
+                }
+            });
+            background.add(backButton);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new GameModesWindow().setVisible(true);
+        });
     }
 
     private JLabel createLabel(BufferedImage originalImage, int x, int y, int width, int height) {
@@ -83,8 +105,7 @@ public class GameModesWindow extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, startButton, originalImage2)) {
                     playClickSound("assets/Sounds/2.Click.wav");
-                    new Board(selectedDifficulty).setVisible(true);
-                    GameModesWindow.this.dispose();
+                    showLoadingScreenAndOpenBoard();
                 }
             }
         };
@@ -120,10 +141,25 @@ public class GameModesWindow extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new GameModesWindow().setVisible(true);
-        });
+    private void showLoadingScreenAndOpenBoard() {
+        LoadingScreen loadingScreen = new LoadingScreen(this);
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                // Simulate loading time
+                Thread.sleep(3000);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                loadingScreen.dispose();
+                new Board(selectedDifficulty).setVisible(true);
+                GameModesWindow.this.dispose();
+            }
+        };
+        worker.execute();
+        loadingScreen.setVisible(true);
     }
 }
 
