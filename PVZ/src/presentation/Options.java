@@ -6,7 +6,7 @@ import java.awt.*;
 public class Options extends JFrame {
     public Options() {
         setTitle("Difficulty");
-        setSize(800, 600);
+        setSize(1000, 677);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);

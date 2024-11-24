@@ -25,7 +25,6 @@ public class PVZGUI extends JFrame {
         setLocationRelativeTo(null);
         imagePanel.setLayout(null);
 
-
         try {
             BufferedImage button1 = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/FirstScreen/Button2.png"));
             BufferedImage button2 = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/FirstScreen/Button3.png"));
