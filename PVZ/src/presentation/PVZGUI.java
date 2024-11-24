@@ -88,7 +88,7 @@ public class PVZGUI extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, secondButton, image)) {
                     playClickSound("Sounds/2.Click.wav");
-                    animateButtonAndOpenWindow(secondButton, new Options());
+                    animateButtonAndOpenWindow(secondButton, new OneVsOne());
                 }
             }
         };
@@ -100,7 +100,7 @@ public class PVZGUI extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, thirdButton, image)) {
                     playClickSound("Sounds/2.Click.wav");
-                    animateButtonAndOpenWindow(thirdButton, new DifficultyWindow());
+                    animateButtonAndOpenWindow(thirdButton, new Options());
                 }
             }
         };

@@ -3,18 +3,18 @@ package presentation;
 import javax.swing.*;
 import java.awt.*;
 
-public class DifficultyWindow extends JFrame {
-    public DifficultyWindow() {
-        setTitle("Difficulty");
+public class OneVsOne extends JFrame {
+    public OneVsOne() {
+        setTitle("One vs One");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        // Add components for difficulty selection
+        // Add components for game mode selection
 
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
-        panel.add(new JLabel("Select a Difficulty"));
+        panel.add(new JLabel("Select a 1 vs 1 game mode"));
 
         setContentPane(panel);
     }
