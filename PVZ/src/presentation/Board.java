@@ -56,19 +56,25 @@ public class Board extends JFrame {
         background.setComponentZOrder(sunCounter, 0);
 
         // Add entities to the board
+        int x = 622; // Starting x position
+        int y = 76; // Starting y position
+        int spacing = 96; // Spacing between plants
+
         for (Entity entity : entities) {
             JLabel entityLabel = new JLabel(entity.getIcon());
-            entityLabel.setBounds(entity.getPosition().x, entity.getPosition().y, entity.getIcon().getIconWidth(), entity.getIcon().getIconHeight());
+            entityLabel.setBounds(x, y, entity.getIcon().getIconWidth(), entity.getIcon().getIconHeight());
             entityLabel.addMouseListener(createPlantMouseListener(entityLabel, entity));
             background.add(entityLabel);
             background.setComponentZOrder(entityLabel, 0);
 
             JLabel costLabel = new JLabel(String.valueOf(entity.getCost()));
-            costLabel.setBounds(entity.getPosition().x, entity.getPosition().y + entity.getIcon().getIconHeight(), 50, 20);
-            costLabel.setFont(new Font("Arial", Font.BOLD, 12));
+            costLabel.setBounds(x + (entity.getIcon().getIconWidth() / 2), y + entity.getIcon().getIconHeight(), 50, 20);
+            costLabel.setFont(new Font("Arial", Font.BOLD, 16));
             costLabel.setForeground(Color.BLACK);
             background.add(costLabel);
             background.setComponentZOrder(costLabel, 0);
+
+            x += spacing; // Update y position for the next plant
         }
     }
 
@@ -80,11 +86,11 @@ public class Board extends JFrame {
     public static void main(String[] args) {
         // Example entities
         List<Entity> entities = List.of(
-                new Sunflower(new Point(622, 76)),
-                new Peashooter(new Point(722, 76)),
-                new WallNut(new Point(818, 76)),
-                new PotatoMine(new Point(908, 86)),
-                new ECIPlant(new Point(1007, 76))
+                new Sunflower(new Point(0, 0)),
+                new Peashooter(new Point(0, 0)),
+                new WallNut(new Point(0, 0)),
+                new PotatoMine(new Point(0, 0)),
+                new ECIPlant(new Point(0, 0))
         );
 
         SwingUtilities.invokeLater(() -> {
@@ -109,7 +115,7 @@ public class Board extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (isPixelVisible(e, plantLabel, plant.getIcon())) {
-                    System.out.println(plant.getName() + " clicked at position: " + plant.getPosition());
+                    System.out.println(plant.getName() + " clicked");
                     // Add additional logic for plant click event here
                 }
             }
