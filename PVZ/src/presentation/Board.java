@@ -101,8 +101,17 @@ public class Board extends JFrame {
                         for (Entity entity : entities) {
                             if (entity.getPosition().equals(new Point(gridX, gridY))) {
                                 entities.remove(entity);
-                                background.remove(getComponentAt(gridX + 20, gridY));
-                                background.repaint();
+                                Component componentToRemove = null;
+                                for (Component component : background.getComponents()) {
+                                    if (component.getBounds().contains(gridX + 20, gridY)) {
+                                        componentToRemove = component;
+                                        break;
+                                    }
+                                }
+                                if (componentToRemove != null) {
+                                    background.remove(componentToRemove);
+                                    background.repaint(); // Ensure the panel is repainted
+                                }
                                 System.out.println("Plant removed at: " + gridX + ", " + gridY);
                                 break;
                             }
