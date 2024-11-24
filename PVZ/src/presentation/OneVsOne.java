@@ -7,7 +7,7 @@ public class OneVsOne extends JFrame {
     public OneVsOne() {
         //playBackgroundMusic("Assets/Sounds/1.StartInGameMusic.wav");
 
-        JpanelImage imagePanel = new JpanelImage("Assets/Images/oneVsOne/Main.png");
+        JpanelImage imagePanel = new JpanelImage("assets/Images/oneVsOne/Main.png");
         setTitle("One vs One");
         setSize(1000, 667);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

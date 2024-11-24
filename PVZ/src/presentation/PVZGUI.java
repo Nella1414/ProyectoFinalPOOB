@@ -15,9 +15,9 @@ public class PVZGUI extends JFrame {
     private Clip backgroundMusicClip;
 
     public PVZGUI() {
-        playBackgroundMusic("Assets/Sounds/1.StartInGameMusic.wav");
+        playBackgroundMusic("assets/Sounds/1.StartInGameMusic.wav");
 
-        JpanelImage imagePanel = new JpanelImage("Assets/Images/FirstScreen/MainMenu.png");
+        JpanelImage imagePanel = new JpanelImage("assets/Images/FirstScreen/MainMenu.png");
         setContentPane(imagePanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -27,10 +27,10 @@ public class PVZGUI extends JFrame {
 
 
         try {
-            BufferedImage button1 = ImageIO.read(getClass().getClassLoader().getResource("Assets/Images/FirstScreen/Button2.png"));
-            BufferedImage button2 = ImageIO.read(getClass().getClassLoader().getResource("Assets/Images/FirstScreen/Button3.png"));
-            BufferedImage originalImage2 = ImageIO.read(getClass().getClassLoader().getResource("Assets/Images/FirstScreen/InitGameButton.png"));
-            JLabel hand = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Assets/Images/FirstScreen/hand.png")));
+            BufferedImage button1 = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/FirstScreen/Button2.png"));
+            BufferedImage button2 = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/FirstScreen/Button3.png"));
+            BufferedImage originalImage2 = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/FirstScreen/InitGameButton.png"));
+            JLabel hand = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("assets/Images/FirstScreen/hand.png")));
 
             // Mano :p
             hand.setBounds(50, 375, 256, 256);
@@ -80,7 +80,7 @@ public class PVZGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, startButton, image)) {
-                    playClickSound("Assets/Sounds/2.Click.wav");
+                    playClickSound("assets/Sounds/2.Click.wav");
                     animateButtonAndOpenWindow(startButton, new GameModesWindow());
                 }
             }
@@ -92,7 +92,7 @@ public class PVZGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, secondButton, image)) {
-                    playClickSound("Assets/Sounds/2.Click.wav");
+                    playClickSound("assets/Sounds/2.Click.wav");
                     animateButtonAndOpenWindow(secondButton, new OneVsOne());
                 }
             }
@@ -104,7 +104,7 @@ public class PVZGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, thirdButton, image)) {
-                    playClickSound("Assets/Sounds/2.Click.wav");
+                    playClickSound("assets/Sounds/2.Click.wav");
                     animateButtonAndOpenWindow(thirdButton, new Options());
                 }
             }
