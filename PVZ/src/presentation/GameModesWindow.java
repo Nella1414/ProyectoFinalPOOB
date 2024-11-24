@@ -26,7 +26,7 @@ public class GameModesWindow extends JFrame {
 
         setTitle("Game Modes");
         setSize(1000, 677);
-        JpanelImage background = new JpanelImage("assets/Images/gameModesWindow/QuickPlay.png");
+        JpanelImage1 background = new JpanelImage1("assets/Images/gameModesWindow/QuickPlay.png");
         setContentPane(background);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

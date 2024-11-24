@@ -17,7 +17,7 @@ public class PVZGUI extends JFrame {
     public PVZGUI() {
         playBackgroundMusic("assets/Sounds/1.StartInGameMusic.wav");
 
-        JpanelImage imagePanel = new JpanelImage("assets/Images/FirstScreen/MainMenu.png");
+        JpanelImage1 imagePanel = new JpanelImage1("assets/Images/FirstScreen/MainMenu.png");
         setContentPane(imagePanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);

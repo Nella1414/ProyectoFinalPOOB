@@ -8,15 +8,24 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Board extends JFrame {
     private final String difficulty;
+    private Entity selectedPlant = null;
+    private final int gridSize = 90; // Tamaño de cada cuadro de la grilla
+    private final int minX = 450;
+    private final int maxX = 1080;
+    private final int minY = 270;
+    private final int maxY = 630;
+    private final List<Entity> entities;
 
     public Board(String difficulty, List<Entity> entities) {
         this.difficulty = difficulty;
+        this.entities = new ArrayList<>(entities); // Convert to mutable list
         setTitle("Board - " + difficulty);
-        JpanelImage background = new JpanelImage("assets/Images/inGame/board/backyardGood.png");
+        JpanelImage1 background = new JpanelImage1("assets/Images/inGame/board/backyardGood.png");
         setContentPane(background);
         setSize(1400, 788);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -24,30 +33,30 @@ public class Board extends JFrame {
         setResizable(false);
         background.setLayout(null);
 
-        // Add more components and logic based on the difficulty
+        // Añadir más componentes y lógica basada en la dificultad
 
         JLabel boardtable = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/board/boardTable.png")));
         boardtable.setBounds(500, 50, 700, 146);
         background.add(boardtable);
 
-        // Shovel
+        // Pala
         try {
             BufferedImage shovelButton = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/inGame/board/shovel.png"));
             JLabel shovel = createLabel(shovelButton, 1100, 85, 65, 70);
             shovel.addMouseListener(createShovelMouseListener(shovel, shovelButton));
             background.add(shovel);
-            background.setComponentZOrder(shovel, 0); //0 es que esta en el top de las capas
+            background.setComponentZOrder(shovel, 0); //0 es que está en el top de las capas
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // Sun
+        // Sol
         JLabel sun = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/board/Sun.png")));
         sun.setBounds(522, 72, 100, 100);
         background.add(sun);
         background.setComponentZOrder(sun, 0);
 
-        // Sun counter
+        // Contador de soles
         JLabel sunCounter = new JLabel(getSuns());
         sunCounter.setBounds(570, 130, 50, 50);
         sunCounter.setFont(new Font("Arial", Font.BOLD, 20));
@@ -55,10 +64,10 @@ public class Board extends JFrame {
         background.add(sunCounter);
         background.setComponentZOrder(sunCounter, 0);
 
-        // Add entities to the board
-        int x = 622; // Starting x position
-        int y = 76; // Starting y position
-        int spacing = 96; // Spacing between plants
+        // Añadir entidades al tablero
+        int x = 622; // Posición x inicial
+        int y = 76; // Posición y inicial
+        int spacing = 96; // Espaciado entre plantas
 
         for (Entity entity : entities) {
             JLabel entityLabel = new JLabel(entity.getIcon());
@@ -74,17 +83,52 @@ public class Board extends JFrame {
             background.add(costLabel);
             background.setComponentZOrder(costLabel, 0);
 
-            x += spacing; // Update y position for the next plant
+            x += spacing; // Actualizar posición x para la siguiente planta
         }
+
+        // Añadir mouse listener al fondo para colocar plantas
+        background.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (selectedPlant != null) {
+                    Point clickPoint = e.getPoint();
+                    int gridX = (clickPoint.x / gridSize) * gridSize;
+                    int gridY = (clickPoint.y / gridSize) * gridSize;
+
+                    if (gridX >= minX && gridX <= maxX && gridY >= minY && gridY <= maxY) {
+                        try {
+                            Entity newPlant = selectedPlant.getClass().getConstructor(Point.class).newInstance(new Point(gridX, gridY));
+                            entities.add(newPlant);
+
+                            JLabel plantLabel = new JLabel(newPlant.getIcon());
+                            plantLabel.setBounds(gridX, gridY, newPlant.getIcon().getIconWidth(), newPlant.getIcon().getIconHeight());
+                            background.add(plantLabel);
+                            background.setComponentZOrder(plantLabel, 0);
+                            background.repaint(); // Ensure the panel is repainted
+                            System.out.println("Plant placed at: " + gridX + ", " + gridY);
+
+                            selectedPlant = null; // Reset selected plant
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("Click outside the allowed grid area.");
+                    }
+                }
+            }
+        });
+
+        // Dibujar la cuadrícula
+        background.setGridSize(gridSize);
     }
 
-    //Cuantos soles tiene el jugador
+    // Cuántos soles tiene el jugador
     private String getSuns() {
         return "100";
     }
 
     public static void main(String[] args) {
-        // Example entities
+        // Entidades de ejemplo
         List<Entity> entities = List.of(
                 new Sunflower(new Point(0, 0)),
                 new Peashooter(new Point(0, 0)),
@@ -94,7 +138,7 @@ public class Board extends JFrame {
         );
 
         SwingUtilities.invokeLater(() -> {
-            Board board = new Board("Novato", entities);
+            Board board = new Board("Novato", new ArrayList<>(entities)); // Convert to mutable list
             board.setVisible(true);
         });
     }
@@ -116,7 +160,7 @@ public class Board extends JFrame {
             public void mousePressed(MouseEvent e) {
                 if (isPixelVisible(e, plantLabel, plant.getIcon())) {
                     System.out.println(plant.getName() + " clicked");
-                    // Add additional logic for plant click event here
+                    selectedPlant = plant; // Set the selected plant
                 }
             }
         };
@@ -148,5 +192,39 @@ public class Board extends JFrame {
         JLabel label = new JLabel(new ImageIcon(resizedImage));
         label.setBounds(x, y, width, height);
         return label;
+    }
+}
+
+class JpanelImage1 extends JPanel {
+    private final String path;
+    private BufferedImage image;
+    private int gridSize;
+
+    public JpanelImage1(String path) {
+        this.path = path;
+        try {
+            image = ImageIO.read(getClass().getClassLoader().getResource(path));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setGridSize(int gridSize) {
+        this.gridSize = gridSize;
+        repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
+
+        // Dibujar la cuadrícula
+        g.setColor(Color.RED);
+        for (int i = 0; i < getWidth(); i += gridSize) {
+            for (int j = 0; j < getHeight(); j += gridSize) {
+                g.drawRect(i, j, gridSize, gridSize);
+            }
+        }
     }
 }
