@@ -1,16 +1,21 @@
 package presentation;
 
+import domain.Entity;
+import domain.Sunflower;
+import domain.Peashooter;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class Board extends JFrame {
-    private String difficulty;
+    private final String difficulty;
 
-    public Board(String difficulty) {
+    public Board(String difficulty, List<Entity> entities) {
         this.difficulty = difficulty;
         setTitle("Board - " + difficulty);
         JpanelImage background = new JpanelImage("assets/Images/inGame/board/backyardGood.png");
@@ -30,12 +35,34 @@ public class Board extends JFrame {
         // Shovel
         try {
             BufferedImage shovelButton = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/inGame/board/shovel.png"));
-            JLabel shovel = createLabel(shovelButton, 1170, 50, 65, 70);
+            JLabel shovel = createLabel(shovelButton, 1100, 85, 65, 70);
             shovel.addMouseListener(createShovelMouseListener(shovel, shovelButton));
             background.add(shovel);
+            background.setComponentZOrder(shovel, 0); //0 es que esta en el top de las capas
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Add entities to the board
+        for (Entity entity : entities) {
+            JLabel entityLabel = new JLabel(entity.getIcon());
+            entityLabel.setBounds(entity.getPosition().x, entity.getPosition().y, entity.getIcon().getIconWidth(), entity.getIcon().getIconHeight());
+            background.add(entityLabel);
+            background.setComponentZOrder(entityLabel, 0);
+        }
+    }
+
+    public static void main(String[] args) {
+        // Example entities
+        List<Entity> entities = List.of(
+            new Sunflower(new Point(622, 76)),
+            new Peashooter(new Point(722, 76))
+        );
+
+        SwingUtilities.invokeLater(() -> {
+            Board board = new Board("Novato", entities);
+            board.setVisible(true);
+        });
     }
 
     private MouseAdapter createShovelMouseListener(JLabel shovel, BufferedImage shovelButton) {
@@ -47,6 +74,19 @@ public class Board extends JFrame {
                 }
             }
         };
+    }
+
+    private boolean isPixelVisible(MouseEvent e, JLabel label, ImageIcon icon) {
+        Point point = e.getPoint();
+        int x = point.x * icon.getIconWidth() / label.getWidth();
+        int y = point.y * icon.getIconHeight() / label.getHeight();
+        Image image = icon.getImage();
+        BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D bGr = bufferedImage.createGraphics();
+        bGr.drawImage(image, 0, 0, null);
+        bGr.dispose();
+        int pixel = bufferedImage.getRGB(x, y);
+        return (pixel >> 24) != 0x00; // Verifies if the pixel is not transparent
     }
 
     private boolean isPixelVisible(MouseEvent e, JLabel label, BufferedImage image) {
@@ -62,12 +102,5 @@ public class Board extends JFrame {
         JLabel label = new JLabel(new ImageIcon(resizedImage));
         label.setBounds(x, y, width, height);
         return label;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Board board = new Board("Novato");
-            board.setVisible(true);
-        });
     }
 }

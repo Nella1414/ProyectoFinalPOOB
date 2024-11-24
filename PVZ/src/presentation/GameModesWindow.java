@@ -1,5 +1,9 @@
 package presentation;
 
+import domain.Entity;
+import domain.Sunflower;
+import domain.Peashooter;
+
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -13,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class GameModesWindow extends JFrame {
     private Clip backgroundMusicClip;
@@ -154,7 +159,11 @@ public class GameModesWindow extends JFrame {
             @Override
             protected void done() {
                 loadingScreen.dispose();
-                new Board(selectedDifficulty).setVisible(true);
+                List<Entity> entities = List.of(
+                    new Sunflower(new Point(622, 76)),
+                    new Peashooter(new Point(722, 76))
+                );
+                new Board(selectedDifficulty, entities).setVisible(true);
                 GameModesWindow.this.dispose();
             }
         };
