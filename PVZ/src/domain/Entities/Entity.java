@@ -7,7 +7,7 @@ public class Entity {
     private final String name;
     private final ImageIcon icon;
     private final int cost;
-    private Point position;
+    private final Point position;
 
     public Entity(String name, String imagePath, Point position, int cost) {
         this.name = name;

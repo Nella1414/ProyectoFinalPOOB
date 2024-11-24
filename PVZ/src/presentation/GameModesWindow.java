@@ -157,12 +157,7 @@ public class GameModesWindow extends JFrame {
             @Override
             protected void done() {
                 loadingScreen.dispose();
-                List<Entity> entities = List.of(
-                        new Sunflower(new Point(622, 76)),
-                        new Peashooter(new Point(722, 76)),
-                        new WallNut(new Point(818, 76)),
-                        new PotatoMine(new Point(912, 76)),
-                        new ECIPlant(new Point(1005, 76)));
+                List<Entity> entities = List.of(new Sunflower(new Point(622, 76)), new Peashooter(new Point(722, 76)), new WallNut(new Point(818, 76)), new PotatoMine(new Point(912, 76)), new ECIPlant(new Point(1005, 76)));
                 new Board(selectedDifficulty, entities).setVisible(true);
                 GameModesWindow.this.dispose();
             }

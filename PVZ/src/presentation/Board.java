@@ -13,8 +13,6 @@ import java.util.List;
 
 public class Board extends JFrame {
     private final String difficulty;
-    private Entity selectedPlant = null;
-    private boolean isShovelSelected = false; // Variable to track if the shovel is selected
     private final int gridSize = 90; // Tamaño de cada cuadro de la grilla
     private final int minX = 360;
     private final int maxX = 1080;
@@ -23,6 +21,8 @@ public class Board extends JFrame {
     private final int suns = 100;
     private final int LawnCleaner = 270;
     private final List<Entity> entities;
+    private Entity selectedPlant = null;
+    private boolean isShovelSelected = false; // Variable to track if the shovel is selected
 
     public Board(String difficulty, List<Entity> entities) {
         this.difficulty = difficulty;
@@ -46,7 +46,7 @@ public class Board extends JFrame {
 
         for (int i = 0; i < 5; i++) {
             JLabel lawnCleaner = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/board/LawnCleaner.png")));
-            lawnCleaner.setBounds(270 , LawnCleaner + (i * 90), 90, 90);
+            lawnCleaner.setBounds(270, LawnCleaner + (i * 90), 90, 90);
             background.add(lawnCleaner);
             background.setComponentZOrder(lawnCleaner, 0);
         }
@@ -83,7 +83,7 @@ public class Board extends JFrame {
 
         for (Entity entity : entities) {
             JLabel entityLabel = new JLabel(entity.getIcon());
-            entityLabel.setBounds(x, y + ((70-(entity.getIcon().getIconHeight()))/2), entity.getIcon().getIconWidth(), entity.getIcon().getIconHeight());
+            entityLabel.setBounds(x, y + ((70 - (entity.getIcon().getIconHeight())) / 2), entity.getIcon().getIconWidth(), entity.getIcon().getIconHeight());
             entityLabel.addMouseListener(createPlantMouseListener(entityLabel, entity));
             background.add(entityLabel);
             background.setComponentZOrder(entityLabel, 0);
@@ -140,7 +140,7 @@ public class Board extends JFrame {
                             entities.add(newPlant);
 
                             JLabel plantLabel = new JLabel(newPlant.getIcon());
-                            plantLabel.setBounds(gridX +((90-newPlant.getIcon().getIconWidth())/2), gridY, newPlant.getIcon().getIconWidth(), newPlant.getIcon().getIconHeight());
+                            plantLabel.setBounds(gridX + ((90 - newPlant.getIcon().getIconWidth()) / 2), gridY, newPlant.getIcon().getIconWidth(), newPlant.getIcon().getIconHeight());
                             background.add(plantLabel);
                             background.setComponentZOrder(plantLabel, 0);
                             background.repaint(); // Ensure the panel is repainted
@@ -151,10 +151,10 @@ public class Board extends JFrame {
                             ex.printStackTrace();
                         }
                     } else {
-                        System.out.println("No plant selected or shovel not selected."+ gridX + "," + gridY);
+                        System.out.println("No plant selected or shovel not selected." + gridX + "," + gridY);
                     }
                 } else {
-                    System.out.println("Click outside the allowed grid area."+ gridX + "," + gridY);
+                    System.out.println("Click outside the allowed grid area." + gridX + "," + gridY);
                 }
             }
         });
@@ -163,25 +163,19 @@ public class Board extends JFrame {
         background.setGridSize(gridSize);
     }
 
-    // Cuántos soles tiene el jugador
-    private String getSuns() {
-        return String.valueOf(suns);
-    }
-
     public static void main(String[] args) {
         // Entidades de ejemplo
-        List<Entity> entities = List.of(
-                new Sunflower(new Point(0, 0)),
-                new Peashooter(new Point(0, 0)),
-                new WallNut(new Point(0, 0)),
-                new PotatoMine(new Point(0, 0)),
-                new ECIPlant(new Point(0, 0))
-        );
+        List<Entity> entities = List.of(new Sunflower(new Point(0, 0)), new Peashooter(new Point(0, 0)), new WallNut(new Point(0, 0)), new PotatoMine(new Point(0, 0)), new ECIPlant(new Point(0, 0)));
 
         SwingUtilities.invokeLater(() -> {
             Board board = new Board("Novato", new ArrayList<>(entities)); // Convert to mutable list
             board.setVisible(true);
         });
+    }
+
+    // Cuántos soles tiene el jugador
+    private String getSuns() {
+        return String.valueOf(suns);
     }
 
     private MouseAdapter createShovelMouseListener(JLabel shovel, BufferedImage shovelButton) {
@@ -261,11 +255,11 @@ class JpanelImage1 extends JPanel {
         super.paintComponent(g);
         g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
 
-        g.setColor(Color.RED);
-        for (int i = 0; i < getWidth(); i += gridSize) {
-            for (int j = 0; j < getHeight(); j += gridSize) {
-                g.drawRect(i, j, gridSize, gridSize);
-            }
-        }
+//        g.setColor(Color.RED);
+//        for (int i = 0; i < getWidth(); i += gridSize) {
+//            for (int j = 0; j < getHeight(); j += gridSize) {
+//                g.drawRect(i, j, gridSize, gridSize);
+//            }
+//        }
     }
 }
