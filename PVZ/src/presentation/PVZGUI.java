@@ -15,21 +15,26 @@ public class PVZGUI extends JFrame {
     private Clip backgroundMusicClip;
 
     public PVZGUI() {
-        playBackgroundMusic("Sounds/1.StartInGameMusic.wav");
+        playBackgroundMusic("Assets/Sounds/1.StartInGameMusic.wav");
 
-        JpanelImage imagePanel = new JpanelImage("Images/inGameFirstScreen/MainMenu.png");
+        JpanelImage imagePanel = new JpanelImage("Assets/Images/FirstScreen/MainMenu.png");
         setContentPane(imagePanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setSize(1000, 667);
         setLocationRelativeTo(null);
+        imagePanel.setLayout(null);
 
-        imagePanel.setLayout(null); // Asegúrate de establecer el diseño nulo
 
         try {
-            BufferedImage button1 = ImageIO.read(getClass().getClassLoader().getResource("Images/inGameFirstScreen/Button2.png"));
-            BufferedImage button2 = ImageIO.read(getClass().getClassLoader().getResource("Images/inGameFirstScreen/Button3.png"));
-            BufferedImage originalImage2 = ImageIO.read(getClass().getClassLoader().getResource("Images/inGameFirstScreen/InitGameButton.png"));
+            BufferedImage button1 = ImageIO.read(getClass().getClassLoader().getResource("Assets/Images/FirstScreen/Button2.png"));
+            BufferedImage button2 = ImageIO.read(getClass().getClassLoader().getResource("Assets/Images/FirstScreen/Button3.png"));
+            BufferedImage originalImage2 = ImageIO.read(getClass().getClassLoader().getResource("Assets/Images/FirstScreen/InitGameButton.png"));
+            JLabel hand = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Assets/Images/FirstScreen/hand.png")));
+
+            // Mano :p
+            hand.setBounds(50, 375, 256, 256);
+            imagePanel.add(hand);
 
             // Panel transparente para manejar eventos de clic
             JPanel buttonPanel = new JPanel(null);
@@ -43,12 +48,12 @@ public class PVZGUI extends JFrame {
             buttonPanel.add(startButton);
 
             // Segundo botón
-            JLabel secondButton = createLabel(button1, 510, 210, 355, 150);
+            JLabel secondButton = createLabel(button1, 510, 215, 355, 150);
             secondButton.addMouseListener(createSecondButtonMouseListener(secondButton, button1));
             buttonPanel.add(secondButton);
 
             // Tercer botón
-            JLabel thirdButton = createLabel(button2, 515, 300, 330, 150);
+            JLabel thirdButton = createLabel(button2, 515, 310, 330, 150);
             thirdButton.addMouseListener(createThirdButtonMouseListener(thirdButton, button2));
             buttonPanel.add(thirdButton);
 
@@ -75,7 +80,7 @@ public class PVZGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, startButton, image)) {
-                    playClickSound("Sounds/2.Click.wav");
+                    playClickSound("Assets/Sounds/2.Click.wav");
                     animateButtonAndOpenWindow(startButton, new GameModesWindow());
                 }
             }
@@ -87,7 +92,7 @@ public class PVZGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, secondButton, image)) {
-                    playClickSound("Sounds/2.Click.wav");
+                    playClickSound("Assets/Sounds/2.Click.wav");
                     animateButtonAndOpenWindow(secondButton, new OneVsOne());
                 }
             }
@@ -99,7 +104,7 @@ public class PVZGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, thirdButton, image)) {
-                    playClickSound("Sounds/2.Click.wav");
+                    playClickSound("Assets/Sounds/2.Click.wav");
                     animateButtonAndOpenWindow(thirdButton, new Options());
                 }
             }

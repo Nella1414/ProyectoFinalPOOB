@@ -15,7 +15,7 @@ public class LoadingScreen extends JDialog {
         getContentPane().setBackground(Color.BLACK);
 
         // Add loading GIF
-        JLabel loadingGifLabel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Images/loading.gif")));
+        JLabel loadingGifLabel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Assets/Images/forEverything/loading.gif")));
         loadingGifLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(loadingGifLabel, BorderLayout.CENTER);
     }

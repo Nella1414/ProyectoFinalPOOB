@@ -5,11 +5,15 @@ import java.awt.*;
 
 public class OneVsOne extends JFrame {
     public OneVsOne() {
+        //playBackgroundMusic("Assets/Sounds/1.StartInGameMusic.wav");
+
+        JpanelImage imagePanel = new JpanelImage("Assets/Images/oneVsOne/Main.png");
         setTitle("One vs One");
-        setSize(800, 600);
+        setSize(1000, 667);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
+        setLocationRelativeTo(null);
         // Add components for game mode selection
 
         JPanel panel = new JPanel();
