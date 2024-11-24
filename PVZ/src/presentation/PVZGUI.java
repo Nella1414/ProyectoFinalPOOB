@@ -31,16 +31,16 @@ public class PVZGUI extends JFrame {
             imagePanel.add(buttonPanel);
 
             // Botón de inicio
-            JLabel startButton = createLabel(originalImage2, -125, -5, 1250, 700);
+            JLabel startButton = createLabel(originalImage2, 515, 60, 370, 200);
             startButton.addMouseListener(createStartButtonMouseListener(startButton, originalImage2));
             buttonPanel.add(startButton);
 
-            // Primer botón
+            // Segundo botón
             JLabel secondButton = createLabel(originalImage, 425, 140, 520, 290);
             secondButton.addMouseListener(createSecondButtonMouseListener(secondButton, originalImage));
             buttonPanel.add(secondButton);
 
-            // Segundo botón
+            // Tercer botón
             JLabel thirdButton = createLabel(originalImage, 435, 240, 480, 268);
             thirdButton.addMouseListener(createThirdButtonMouseListener(thirdButton, originalImage));
             buttonPanel.add(thirdButton);
