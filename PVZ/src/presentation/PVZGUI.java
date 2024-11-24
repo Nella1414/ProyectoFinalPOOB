@@ -10,7 +10,7 @@ import javax.swing.*;
 public class PVZGUI extends JFrame {
 
     public PVZGUI() {
-        JpanelImage imagePanel = new JpanelImage("Images/MainMenu.png");
+        JpanelImage imagePanel = new JpanelImage("Images/inGameFirstScreen/MainMenu.png");
         setContentPane(imagePanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -22,7 +22,7 @@ public class PVZGUI extends JFrame {
         imagePanel.setLayout(null); // Asegúrate de establecer el diseño nulo
 
         try {
-            BufferedImage originalImage = ImageIO.read(getClass().getClassLoader().getResource("Images/ChallengeButton.png"));
+            BufferedImage originalImage = ImageIO.read(getClass().getClassLoader().getResource("Images/inGameFirstScreen/ChallengeButton.png"));
             Image resizedImage = originalImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
             JButton startButton = new JButton(new ImageIcon(resizedImage));
             startButton.setContentAreaFilled(false);
