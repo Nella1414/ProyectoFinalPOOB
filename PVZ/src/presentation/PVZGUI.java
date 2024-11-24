@@ -1,6 +1,9 @@
 package presentation;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -11,6 +14,8 @@ import java.awt.image.BufferedImage;
 public class PVZGUI extends JFrame {
 
     public PVZGUI() {
+        playBackgroundMusic("Sounds/1.StartInGameMusic.wav");
+
         JpanelImage imagePanel = new JpanelImage("Images/inGameFirstScreen/MainMenu.png");
         setContentPane(imagePanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -129,4 +134,16 @@ public class PVZGUI extends JFrame {
         });
         timer.start();
     }
+
+    private void playBackgroundMusic(String path) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource(path));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

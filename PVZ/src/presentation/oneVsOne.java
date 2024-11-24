@@ -15,5 +15,7 @@ public class oneVsOne extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
         panel.add(new JLabel("Select a game mode"));
+
+        setContentPane(panel);
     }
 }

@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameModesWindow extends JFrame {
-
     public GameModesWindow() {
         setTitle("Game Modes");
         setSize(1000, 625);
