@@ -36,12 +36,12 @@ public class PVZGUI extends JFrame {
             buttonPanel.add(startButton);
 
             // Segundo botón
-            JLabel secondButton = createLabel(originalImage, 425, 140, 520, 290);
+            JLabel secondButton = createLabel(originalImage, 510, 200, 355, 150);
             secondButton.addMouseListener(createSecondButtonMouseListener(secondButton, originalImage));
             buttonPanel.add(secondButton);
 
             // Tercer botón
-            JLabel thirdButton = createLabel(originalImage, 435, 240, 480, 268);
+            JLabel thirdButton = createLabel(originalImage, 515, 290, 330, 150);
             thirdButton.addMouseListener(createThirdButtonMouseListener(thirdButton, originalImage));
             buttonPanel.add(thirdButton);
 
