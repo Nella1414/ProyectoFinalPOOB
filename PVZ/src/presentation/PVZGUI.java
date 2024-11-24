@@ -145,7 +145,7 @@ public class PVZGUI extends JFrame {
             @Override
             protected Void doInBackground() throws Exception {
                 // Simulate loading time
-                Thread.sleep(2000);
+                Thread.sleep(3000);
                 return null;
             }
 
