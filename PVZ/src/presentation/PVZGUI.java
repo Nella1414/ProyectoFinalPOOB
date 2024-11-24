@@ -7,9 +7,9 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class PVZGUI2 extends JFrame {
+public class PVZGUI extends JFrame {
 
-    public PVZGUI2() {
+    public PVZGUI() {
         JpanelImage imagePanel = new JpanelImage("Images/MainMenu.png");
         setContentPane(imagePanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,7 +56,7 @@ public class PVZGUI2 extends JFrame {
                             ((Timer) e.getSource()).stop();
                             // Abrir la nueva ventana
                             new GameModesWindow().setVisible(true);
-                            PVZGUI2.this.dispose();
+                            PVZGUI.this.dispose();
                         }
                     }
                 });
@@ -67,7 +67,7 @@ public class PVZGUI2 extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new PVZGUI2().setVisible(true);
+            new PVZGUI().setVisible(true);
         });
     }
 }
