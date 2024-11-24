@@ -16,7 +16,7 @@ public class Board extends JFrame {
     private Entity selectedPlant = null;
     private boolean isShovelSelected = false; // Variable to track if the shovel is selected
     private final int gridSize = 90; // Tamaño de cada cuadro de la grilla
-    private final int minX = 450;
+    private final int minX = 360;
     private final int maxX = 1080;
     private final int minY = 270;
     private final int maxY = 630;
@@ -72,13 +72,18 @@ public class Board extends JFrame {
 
         for (Entity entity : entities) {
             JLabel entityLabel = new JLabel(entity.getIcon());
-            entityLabel.setBounds(x, y, entity.getIcon().getIconWidth(), entity.getIcon().getIconHeight());
+            entityLabel.setBounds(x, y + ((70-(entity.getIcon().getIconHeight()))/2), entity.getIcon().getIconWidth(), entity.getIcon().getIconHeight());
             entityLabel.addMouseListener(createPlantMouseListener(entityLabel, entity));
             background.add(entityLabel);
             background.setComponentZOrder(entityLabel, 0);
 
+            JLabel sunLabel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/board/LittleSun.png")));
+            sunLabel.setBounds(x + (entity.getIcon().getIconWidth() / 2) - 25, 150, 20, 20);
+            background.add(sunLabel);
+            background.setComponentZOrder(sunLabel, 0);
+
             JLabel costLabel = new JLabel(String.valueOf(entity.getCost()));
-            costLabel.setBounds(x + (entity.getIcon().getIconWidth() / 2), y + entity.getIcon().getIconHeight(), 50, 20);
+            costLabel.setBounds(x + (entity.getIcon().getIconWidth() / 2), 150, 50, 20);
             costLabel.setFont(new Font("Arial", Font.BOLD, 16));
             costLabel.setForeground(Color.BLACK);
             background.add(costLabel);
@@ -124,7 +129,7 @@ public class Board extends JFrame {
                             entities.add(newPlant);
 
                             JLabel plantLabel = new JLabel(newPlant.getIcon());
-                            plantLabel.setBounds(gridX + 20, gridY, newPlant.getIcon().getIconWidth(), newPlant.getIcon().getIconHeight());
+                            plantLabel.setBounds(gridX +((90-newPlant.getIcon().getIconWidth())/2), gridY, newPlant.getIcon().getIconWidth(), newPlant.getIcon().getIconHeight());
                             background.add(plantLabel);
                             background.setComponentZOrder(plantLabel, 0);
                             background.repaint(); // Ensure the panel is repainted
@@ -135,10 +140,10 @@ public class Board extends JFrame {
                             ex.printStackTrace();
                         }
                     } else {
-                        System.out.println("No plant selected or shovel not selected.");
+                        System.out.println("No plant selected or shovel not selected."+ gridX + "," + gridY);
                     }
                 } else {
-                    System.out.println("Click outside the allowed grid area.");
+                    System.out.println("Click outside the allowed grid area."+ gridX + "," + gridY);
                 }
             }
         });
@@ -244,5 +249,12 @@ class JpanelImage1 extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
+
+        g.setColor(Color.RED);
+        for (int i = 0; i < getWidth(); i += gridSize) {
+            for (int j = 0; j < getHeight(); j += gridSize) {
+                g.drawRect(i, j, gridSize, gridSize);
+            }
+        }
     }
 }
