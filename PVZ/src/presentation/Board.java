@@ -20,6 +20,8 @@ public class Board extends JFrame {
     private final int maxX = 1080;
     private final int minY = 270;
     private final int maxY = 630;
+    private final int suns = 100;
+    private final int LawnCleaner = 270;
     private final List<Entity> entities;
 
     public Board(String difficulty, List<Entity> entities) {
@@ -39,6 +41,15 @@ public class Board extends JFrame {
         JLabel boardtable = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/board/boardTable.png")));
         boardtable.setBounds(500, 50, 700, 146);
         background.add(boardtable);
+
+        // Cortadora de pasto
+
+        for (int i = 0; i < 5; i++) {
+            JLabel lawnCleaner = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/board/LawnCleaner.png")));
+            lawnCleaner.setBounds(270 , LawnCleaner + (i * 90), 90, 90);
+            background.add(lawnCleaner);
+            background.setComponentZOrder(lawnCleaner, 0);
+        }
 
         // Pala
         try {
@@ -154,7 +165,7 @@ public class Board extends JFrame {
 
     // Cuántos soles tiene el jugador
     private String getSuns() {
-        return "100";
+        return String.valueOf(suns);
     }
 
     public static void main(String[] args) {
