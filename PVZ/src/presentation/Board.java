@@ -1,8 +1,6 @@
 package presentation;
 
-import domain.Entity;
-import domain.Sunflower;
-import domain.Peashooter;
+import domain.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -43,20 +41,50 @@ public class Board extends JFrame {
             e.printStackTrace();
         }
 
+        // Sun
+        JLabel sun = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/board/Sun.png")));
+        sun.setBounds(522, 72, 100, 100);
+        background.add(sun);
+        background.setComponentZOrder(sun, 0);
+
+        // Sun counter
+        JLabel sunCounter = new JLabel(getSuns());
+        sunCounter.setBounds(570, 130, 50, 50);
+        sunCounter.setFont(new Font("Arial", Font.BOLD, 20));
+        sunCounter.setForeground(Color.BLACK);
+        background.add(sunCounter);
+        background.setComponentZOrder(sunCounter, 0);
+
         // Add entities to the board
         for (Entity entity : entities) {
             JLabel entityLabel = new JLabel(entity.getIcon());
             entityLabel.setBounds(entity.getPosition().x, entity.getPosition().y, entity.getIcon().getIconWidth(), entity.getIcon().getIconHeight());
+            entityLabel.addMouseListener(createPlantMouseListener(entityLabel, entity));
             background.add(entityLabel);
             background.setComponentZOrder(entityLabel, 0);
+
+            JLabel costLabel = new JLabel(String.valueOf(entity.getCost()));
+            costLabel.setBounds(entity.getPosition().x, entity.getPosition().y + entity.getIcon().getIconHeight(), 50, 20);
+            costLabel.setFont(new Font("Arial", Font.BOLD, 12));
+            costLabel.setForeground(Color.BLACK);
+            background.add(costLabel);
+            background.setComponentZOrder(costLabel, 0);
         }
+    }
+
+    //Cuantos soles tiene el jugador
+    private String getSuns() {
+        return "100";
     }
 
     public static void main(String[] args) {
         // Example entities
         List<Entity> entities = List.of(
-            new Sunflower(new Point(622, 76)),
-            new Peashooter(new Point(722, 76))
+                new Sunflower(new Point(622, 76)),
+                new Peashooter(new Point(722, 76)),
+                new WallNut(new Point(818, 76)),
+                new PotatoMine(new Point(908, 86)),
+                new ECIPlant(new Point(1007, 76))
         );
 
         SwingUtilities.invokeLater(() -> {
@@ -71,6 +99,18 @@ public class Board extends JFrame {
             public void mousePressed(MouseEvent e) {
                 if (isPixelVisible(e, shovel, shovelButton)) {
                     System.out.println("Shovel clicked");
+                }
+            }
+        };
+    }
+
+    private MouseAdapter createPlantMouseListener(JLabel plantLabel, Entity plant) {
+        return new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (isPixelVisible(e, plantLabel, plant.getIcon())) {
+                    System.out.println(plant.getName() + " clicked at position: " + plant.getPosition());
+                    // Add additional logic for plant click event here
                 }
             }
         };
