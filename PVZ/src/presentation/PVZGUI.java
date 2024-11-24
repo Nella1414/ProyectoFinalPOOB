@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 public class PVZGUI extends JFrame {
+    private Clip backgroundMusicClip;
 
     public PVZGUI() {
         playBackgroundMusic("Sounds/1.StartInGameMusic.wav");
@@ -20,7 +21,7 @@ public class PVZGUI extends JFrame {
         setContentPane(imagePanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        setSize(1000, 625);
+        setSize(1000, 667);
         setLocationRelativeTo(null);
 
         imagePanel.setLayout(null); // Asegúrate de establecer el diseño nulo
@@ -36,17 +37,17 @@ public class PVZGUI extends JFrame {
             imagePanel.add(buttonPanel);
 
             // Botón de inicio
-            JLabel startButton = createLabel(originalImage2, 515, 60, 370, 200);
+            JLabel startButton = createLabel(originalImage2, 515, 70, 370, 200);
             startButton.addMouseListener(createStartButtonMouseListener(startButton, originalImage2));
             buttonPanel.add(startButton);
 
             // Segundo botón
-            JLabel secondButton = createLabel(originalImage, 510, 200, 355, 150);
+            JLabel secondButton = createLabel(originalImage, 510, 210, 355, 150);
             secondButton.addMouseListener(createSecondButtonMouseListener(secondButton, originalImage));
             buttonPanel.add(secondButton);
 
             // Tercer botón
-            JLabel thirdButton = createLabel(originalImage, 515, 290, 330, 150);
+            JLabel thirdButton = createLabel(originalImage, 515, 300, 330, 150);
             thirdButton.addMouseListener(createThirdButtonMouseListener(thirdButton, originalImage));
             buttonPanel.add(thirdButton);
 
@@ -73,6 +74,7 @@ public class PVZGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, startButton, image)) {
+                    playClickSound("Sounds/2.Click.wav");
                     animateButtonAndOpenWindow(startButton, new GameModesWindow());
                 }
             }
@@ -84,6 +86,7 @@ public class PVZGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, secondButton, image)) {
+                    playClickSound("Sounds/2.Click.wav");
                     animateButtonAndOpenWindow(secondButton, new oneVsOne());
                 }
             }
@@ -95,6 +98,7 @@ public class PVZGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, thirdButton, image)) {
+                    playClickSound("Sounds/2.Click.wav");
                     animateButtonAndOpenWindow(thirdButton, new DifficultyWindow());
                 }
             }
@@ -127,23 +131,61 @@ public class PVZGUI extends JFrame {
                     count++;
                 } else {
                     ((Timer) e.getSource()).stop();
-                    window.setVisible(true);
-                    PVZGUI.this.dispose();
+                    stopBackgroundMusic();
+                    showLoadingScreen(window);
                 }
             }
         });
         timer.start();
     }
 
+    private void showLoadingScreen(JFrame window) {
+        LoadingScreen loadingScreen = new LoadingScreen(this);
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                // Simulate loading time
+                Thread.sleep(2000);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                loadingScreen.dispose();
+                window.setVisible(true);
+                PVZGUI.this.dispose();
+            }
+        };
+        worker.execute();
+        loadingScreen.setVisible(true);
+    }
+
     private void playBackgroundMusic(String path) {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource(path));
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            backgroundMusicClip = AudioSystem.getClip();
+            backgroundMusicClip.open(audioInputStream);
+            backgroundMusicClip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void stopBackgroundMusic() {
+        if (backgroundMusicClip != null && backgroundMusicClip.isRunning()) {
+            backgroundMusicClip.stop();
+            backgroundMusicClip.close();
+        }
+    }
+
+    private void playClickSound(String path) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource(path));
+            Clip clickClip = AudioSystem.getClip();
+            clickClip.open(audioInputStream);
+            clickClip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
