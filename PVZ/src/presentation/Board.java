@@ -165,7 +165,12 @@ public class Board extends JFrame {
 
     public static void main(String[] args) {
         // Entidades de ejemplo
-        List<Entity> entities = List.of(new Sunflower(new Point(0, 0)), new Peashooter(new Point(0, 0)), new WallNut(new Point(0, 0)), new PotatoMine(new Point(0, 0)), new ECIPlant(new Point(0, 0)));
+        List<Entity> entities = List.of(
+                new Sunflower(new Point(0, 0)),
+                new Peashooter(new Point(0, 0)),
+                new WallNut(new Point(0, 0)),
+                new PotatoMine(new Point(0, 0)),
+                new ECIPlant(new Point(0, 0)));
 
         SwingUtilities.invokeLater(() -> {
             Board board = new Board("Novato", new ArrayList<>(entities)); // Convert to mutable list
