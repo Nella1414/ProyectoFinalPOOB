@@ -1,6 +1,7 @@
 package presentation;
 
-import domain.Entities.*;
+import domain.board.BoardDay;
+import domain.entities.*;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
@@ -16,10 +17,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import domain.board.Board;
 
 public class GameModesWindow extends JFrame {
     private Clip backgroundMusicClip;
     private String selectedDifficulty;
+    private BoardDay board = new BoardDay(200);
 
     public GameModesWindow() {
         playBackgroundMusic("assets/Sounds/1.StartInGameMusic.wav");
@@ -158,12 +161,12 @@ public class GameModesWindow extends JFrame {
             protected void done() {
                 loadingScreen.dispose();
                 List<Entity> entities = List.of(
-                        new Sunflower(new Point(0, 0)),
-                        new Peashooter(new Point(0, 0)),
-                        new WallNut(new Point(0, 0)),
-                        new PotatoMine(new Point(0, 0)),
-                        new ECIPlant(new Point(0, 0)));
-                new Board(selectedDifficulty, entities).setVisible(true);
+                        new Sunflower(board,new Point(0, 0)),
+                        new Peashooter(board,new Point(0, 0)),
+                        new WallNut(board,new Point(0, 0)),
+                        new PotatoMine(board,new Point(0, 0)),
+                        new ECIPlant(board,new Point(0, 0)));
+                new GameEasyWindow(selectedDifficulty, entities,board).setVisible(true);
                 GameModesWindow.this.dispose();
             }
         };
