@@ -19,10 +19,10 @@ import java.io.InputStream;
 import java.util.List;
 
 public class GameModesWindow extends JFrame {
+    private final JTextField sunsField;
     private Clip backgroundMusicClip;
     private String selectedDifficulty;
     private int initialSuns;
-    private final JTextField sunsField;
     private List<Entity> entities;
 
     public GameModesWindow() {
@@ -90,7 +90,7 @@ public class GameModesWindow extends JFrame {
 
         final InputStream is2 = getClass().getClassLoader().getResourceAsStream("assets/Fonts/pvz.ttf");
 
-        try  {
+        try {
             Font customFont = Font.createFont(Font.TRUETYPE_FONT, is2).deriveFont(20f);
             label2.setFont(customFont);
         } catch (FontFormatException | IOException e) {

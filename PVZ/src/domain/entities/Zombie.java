@@ -1,20 +1,24 @@
 package domain.entities;
-import java.awt.*;
+
 import domain.board.Board;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Timer;
+
 public abstract class Zombie extends Entity {
     private int life;
-    private int speed;
-    private int damage;
-    private float attackSpeed;
-    private String type;
+    private final int speed;
+    private final int damage;
+    private final float attackSpeed;
+    private final String type;
     private boolean isfreezed;
     private Timer moveTimer;
     private Timer attackTimer;
+
     public Zombie(String name, int cost, int life, int speed, int damage, float attackSpeed, String type, Board board, Point position, String imagePath) {
-        super(name,cost,position, imagePath);
+        super(name, cost, position, imagePath);
         this.life = life;
         this.speed = speed;
         this.damage = damage;
@@ -23,8 +27,9 @@ public abstract class Zombie extends Entity {
         this.isfreezed = false;
         startMoving(board);
     }
+
     public void startMoving(Board board) {
-        int interval = (int) (1000 / speed); // Intervalo en milisegundos basado en velocidad
+        int interval = 1000 / speed; // Intervalo en milisegundos basado en velocidad
         moveTimer = new Timer(interval, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -33,11 +38,13 @@ public abstract class Zombie extends Entity {
         });
         moveTimer.start();
     }
+
     public void stopMoving() {
         if (moveTimer != null) {
             moveTimer.stop();
         }
     }
+
     public void move(Board board) {
         if (isfreezed) {
             System.out.println(this.getName() + " está congelado y no puede moverse.");
@@ -62,6 +69,7 @@ public abstract class Zombie extends Entity {
 
         }
     }
+
     public void startAttacking(Board board) {
         if (attackTimer != null && attackTimer.isRunning()) {
             System.out.println(this.getName() + " ya está atacando.");
@@ -77,14 +85,16 @@ public abstract class Zombie extends Entity {
         attackTimer.start();
         System.out.println(this.getName() + " comenzó a atacar.");
     }
+
     public void stopAttacking() {
         if (attackTimer != null) {
             attackTimer.stop();
         }
     }
+
     public void attack(Board board) {
         Point currentPosition = this.getPosition();
-        if (board.getPlants().containsKey(currentPosition) ) {
+        if (board.getPlants().containsKey(currentPosition)) {
             Plant target = board.getPlants().get(currentPosition);
             target.receiveDamage(this.damage); // Aplicar daño
             System.out.println(this.getName() + " atacó a " + target.getName() + " causando " + this.damage + " de daño. Vida restante de la planta: " + target.getLife());
@@ -100,37 +110,47 @@ public abstract class Zombie extends Entity {
             startMoving(board); // Reanudar movimiento si no hay plantas
         }
     }
+
     public void receiveDamage(int damage) {
         this.life -= damage;
         System.out.println(type + " recibe " + damage + " de daño. Vida restante: " + life);
     }
+
     public boolean isAlive() {
         return this.life > 0;
     }
+
     public void freeze() {
         this.isfreezed = true;
         System.out.println(type + " está congelado.");
     }
+
     public void unfreeze() {
         this.isfreezed = false;
         System.out.println(type + " ya no está congelado.");
     }
+
     // Getters
     public int getLife() {
         return life;
     }
+
     public int getSpeed() {
         return speed;
     }
+
     public int getDamage() {
         return damage;
     }
+
     public float getAttackSpeed() {
         return attackSpeed;
     }
+
     public String getType() {
         return type;
     }
+
     public boolean getIsfreezed() {
         return this.isfreezed;
     }
