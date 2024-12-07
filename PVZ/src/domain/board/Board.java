@@ -43,6 +43,20 @@ public abstract class Board {
         return ((y - 90) / 90);
     }
 
+    public int getColumnFromX(int x) {
+        return (x - 100) / 35;
+    }
+
+    public boolean isPlantInColumn(int column) {
+        for (Plant plant : plants.values()) {
+            int plantColumn = getColumnFromX(plant.getPosition().x);
+            if (plantColumn == column) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int getSunPoints() {
         return sunPoints;
     }
