@@ -13,11 +13,11 @@ public abstract class Zombie extends Entity {
     private final int damage;
     private final float attackSpeed;
     private final String type;
+    private final GameEasyWindow gameWindow;
     private int life;
     private boolean isfreezed;
     private Timer moveTimer;
     private Timer attackTimer;
-    private final GameEasyWindow gameWindow;
 
     public Zombie(String name, int cost, int life, int speed, int damage, float attackSpeed, String type, Board board, Point position, String imagePath, GameEasyWindow gameWindow) {
         super(name, cost, position, imagePath);
@@ -61,7 +61,7 @@ public abstract class Zombie extends Entity {
             return;
         }
         if (board.getPlants().containsKey(currentPosition)) {
-            System.out.println(this.getName() + " encontró una planta en " + nextPosition + " y comenzará a atacar.");
+            System.out.println(this.getName() + " encontró una planta en " + currentPosition + " y comenzará a atacar.");
             stopMoving();
             startAttacking(board);
         } else {
@@ -100,6 +100,18 @@ public abstract class Zombie extends Entity {
             Plant target = board.getPlants().get(currentPosition);
             target.receiveDamage(this.damage);
             System.out.println(this.getName() + " atacó a " + target.getName() + " causando " + this.damage + " de daño. Vida restante de la planta: " + target.getLife());
+
+            // Cambiar la imagen del zombie cuando ataca
+            SwingUtilities.invokeLater(() -> {
+                JLabel zombieLabel = gameWindow.getZombieLabel(this);
+                if (zombieLabel != null) {
+                    ImageIcon attackingZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/AttackingZombie.gif"));
+                    zombieLabel.setIcon(attackingZombieIcon);
+                    zombieLabel.setVisible(true);
+                    zombieLabel.repaint();
+                }
+            });
+
             if (!target.isAlive()) {
                 board.getPlants().remove(currentPosition);
                 System.out.println(target.getName() + " ha sido eliminada.");
