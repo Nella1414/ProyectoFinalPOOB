@@ -8,6 +8,8 @@ import domain.entities.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -222,18 +224,26 @@ public class GameEasyWindow extends JFrame {
     }
 
     public void removeZombie(Zombie zombie) {
-        JLabel zombieLabel = getZombieLabel(zombie);
-        if (zombieLabel != null) {
-            // Cambiar la imagen del zombie a la imagen de zombie muerto
-            try {
-                BufferedImage deadZombieImage = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/DeadZombie.gif"));
-                zombieLabel.setIcon(new ImageIcon(deadZombieImage));
-            } catch (IOException e) {
-                e.printStackTrace();
+    JLabel zombieLabel = getZombieLabel(zombie);
+    if (zombieLabel != null) {
+        // Cambiar la imagen del zombie a la imagen de zombie muerto
+        ImageIcon deadZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/DeadZombie.gif"));
+        zombieLabel.setIcon(deadZombieIcon);
+        zombieLabel.repaint();
+
+        // Programar la eliminación del JLabel después de unos segundos
+        Timer timer = new Timer(3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                background.remove(zombieLabel);
+                background.repaint(); // Asegurarse de que el panel se repinte
+                System.out.println("Zombie removed from interface: " + zombie.getName());
             }
-            background.repaint(); // Ensure the panel is repainted
-        }
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
+}
 
     public JLabel getZombieLabel(Zombie zombie) {
         for (Component component : background.getComponents()) {

@@ -2,17 +2,20 @@ package domain.entities;
 
 import domain.board.Board;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public abstract class Zombie extends Entity {
-    private int life;
     private final int speed;
     private final int damage;
     private final float attackSpeed;
     private final String type;
+    private int life;
     private boolean isfreezed;
     private Timer moveTimer;
     private Timer attackTimer;
@@ -111,10 +114,26 @@ public abstract class Zombie extends Entity {
         }
     }
 
-    public void receiveDamage(int damage) {
-        this.life -= damage;
-        System.out.println(type + " recibe " + damage + " de daño. Vida restante: " + life);
+    public JLabel getZombieLabel(Zombie zombie) {
+        return new JLabel();
     }
+
+    public void receiveDamage(int damage) {
+    this.life -= damage;
+    System.out.println(type + " recibe " + damage + " de daño. Vida restante: " + life);
+    if (!isAlive()) {
+        stopMoving();
+        stopAttacking();
+        SwingUtilities.invokeLater(() -> {
+            JLabel zombieLabel = getZombieLabel(this);
+            if (zombieLabel != null) {
+                ImageIcon deadZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/DeadZombie.gif"));
+                zombieLabel.setIcon(deadZombieIcon);
+                zombieLabel.repaint();
+            }
+        });
+    }
+}
 
     public boolean isAlive() {
         return this.life > 0;
