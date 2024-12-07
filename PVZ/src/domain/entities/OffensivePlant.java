@@ -35,7 +35,7 @@ public abstract class OffensivePlant extends Plant {
         }
     }
 
-    public abstract void attack(Board board); // Método definido en subclases
+    public abstract void attack(Board board); // Metodo definido en subclases
 
     public int getDamage() {
         return this.damage;

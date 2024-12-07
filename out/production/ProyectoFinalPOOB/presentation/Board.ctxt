@@ -1,0 +1,25 @@
+#BlueJ class context
+comment0.target=Board
+comment1.params=difficulty\ entities
+comment1.target=Board(java.lang.String,\ java.util.List)
+comment10.params=e\ label\ image
+comment10.target=boolean\ isPixelVisible(java.awt.event.MouseEvent,\ javax.swing.JLabel,\ java.awt.image.BufferedImage)
+comment11.params=originalImage\ x\ y\ width\ height
+comment11.target=javax.swing.JLabel\ createLabel(java.awt.image.BufferedImage,\ int,\ int,\ int,\ int)
+comment2.params=e
+comment2.target=void\ mousePressed(java.awt.event.MouseEvent)
+comment3.params=args
+comment3.target=void\ main(java.lang.String[])
+comment4.params=
+comment4.target=java.lang.String\ getSuns()
+comment5.params=shovel\ shovelButton
+comment5.target=java.awt.event.MouseAdapter\ createShovelMouseListener(javax.swing.JLabel,\ java.awt.image.BufferedImage)
+comment6.params=e
+comment6.target=void\ mousePressed(java.awt.event.MouseEvent)
+comment7.params=plantLabel\ plant
+comment7.target=java.awt.event.MouseAdapter\ createPlantMouseListener(javax.swing.JLabel,\ domain.Entities.Entity)
+comment8.params=e
+comment8.target=void\ mousePressed(java.awt.event.MouseEvent)
+comment9.params=e\ label\ icon
+comment9.target=boolean\ isPixelVisible(java.awt.event.MouseEvent,\ javax.swing.JLabel,\ javax.swing.ImageIcon)
+numComments=12

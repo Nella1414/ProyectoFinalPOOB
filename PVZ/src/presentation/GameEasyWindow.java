@@ -193,7 +193,7 @@ public class GameEasyWindow extends JFrame {
     public void spawnRandomZombie() {
         Random random = new Random();
         int row = random.nextInt(5); // Assuming there are 5 rows
-        int gridY = 240 + (row * gridSize);
+        int gridY = 210 + (row * gridSize);
         int gridX = maxX; // Zombies appear at the last position of the grid
 
         try {
@@ -211,6 +211,15 @@ public class GameEasyWindow extends JFrame {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void removeZombie(Zombie zombie) {
+        board.getZombies().remove(zombie.getPosition());
+        JLabel zombieLabel = getZombieLabel(zombie);
+        if (zombieLabel != null) {
+            background.remove(zombieLabel);
+            background.repaint(); // Ensure the panel is repainted
         }
     }
 

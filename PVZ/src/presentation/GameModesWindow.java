@@ -17,12 +17,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import domain.board.Board;
 
 public class GameModesWindow extends JFrame {
     private Clip backgroundMusicClip;
     private String selectedDifficulty;
-    private BoardDay board = new BoardDay(200);
+    private int initialSuns;
+    private final JTextField sunsField;
+    private List<Entity> entities;
 
     public GameModesWindow() {
         playBackgroundMusic("assets/Sounds/1.StartInGameMusic.wav");
@@ -51,6 +52,15 @@ public class GameModesWindow extends JFrame {
             }
         });
 
+        // Create a custom JTextField to select initial suns
+        sunsField = new JTextField("200");
+        sunsField.setBounds(400, 400, 200, 30);
+        sunsField.setHorizontalAlignment(JTextField.CENTER);
+        sunsField.setFont(new Font("Arial", Font.BOLD, 16));
+        sunsField.setForeground(Color.BLACK);
+        sunsField.setOpaque(false);
+        background.add(sunsField);
+
         // Create a custom JButton
         try {
             BufferedImage buttonImage = ImageIO.read(getClass().getClassLoader().getResource("assets/Images/gameModesWindow/StartButton.png"));
@@ -63,6 +73,7 @@ public class GameModesWindow extends JFrame {
 
         // Add components for game mode selection
         JLabel label = new JLabel("Select a game mode");
+
         final InputStream is = getClass().getClassLoader().getResourceAsStream("assets/Fonts/pvz.ttf");
 
         try {
@@ -74,6 +85,21 @@ public class GameModesWindow extends JFrame {
         label.setForeground(Color.BLACK);
         label.setBounds(400, 250, 300, 30);
         background.add(label);
+
+        JLabel label2 = new JLabel("Select initial suns");
+
+        final InputStream is2 = getClass().getClassLoader().getResourceAsStream("assets/Fonts/pvz.ttf");
+
+        try  {
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, is2).deriveFont(20f);
+            label2.setFont(customFont);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+
+        label2.setForeground(Color.BLACK);
+        label2.setBounds(400, 350, 300, 30);
+        background.add(label2);
 
         // Create a Back button with custom image
         try {
@@ -160,13 +186,10 @@ public class GameModesWindow extends JFrame {
             @Override
             protected void done() {
                 loadingScreen.dispose();
-                List<Entity> entities = List.of(
-                        new Sunflower(board,new Point(0, 0)),
-                        new Peashooter(board,new Point(0, 0)),
-                        new WallNut(board,new Point(0, 0)),
-                        new PotatoMine(board,new Point(0, 0)),
-                        new ECIPlant(board,new Point(0, 0)));
-                new GameEasyWindow(selectedDifficulty, entities,board).setVisible(true);
+                initialSuns = Integer.parseInt(sunsField.getText()); // Update initialSuns
+                BoardDay board = new BoardDay(initialSuns); // Create BoardDay with initialSuns
+                entities = List.of(new Sunflower(board, new Point(0, 0)), new Peashooter(board, new Point(0, 0)), new WallNut(board, new Point(0, 0)), new PotatoMine(board, new Point(0, 0)), new ECIPlant(board, new Point(0, 0)));
+                new GameEasyWindow(selectedDifficulty, entities, board).setVisible(true);
                 GameModesWindow.this.dispose();
             }
         };
