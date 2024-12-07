@@ -1,14 +1,12 @@
 package domain.entities;
 
 import domain.board.Board;
+import presentation.GameEasyWindow;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public abstract class Zombie extends Entity {
     private final int speed;
@@ -19,8 +17,9 @@ public abstract class Zombie extends Entity {
     private boolean isfreezed;
     private Timer moveTimer;
     private Timer attackTimer;
+    private final GameEasyWindow gameWindow;
 
-    public Zombie(String name, int cost, int life, int speed, int damage, float attackSpeed, String type, Board board, Point position, String imagePath) {
+    public Zombie(String name, int cost, int life, int speed, int damage, float attackSpeed, String type, Board board, Point position, String imagePath, GameEasyWindow gameWindow) {
         super(name, cost, position, imagePath);
         this.life = life;
         this.speed = speed;
@@ -28,11 +27,12 @@ public abstract class Zombie extends Entity {
         this.attackSpeed = attackSpeed;
         this.type = type;
         this.isfreezed = false;
+        this.gameWindow = gameWindow;
         startMoving(board);
     }
 
     public void startMoving(Board board) {
-        int interval = 1000 / speed; // Intervalo en milisegundos basado en velocidad
+        int interval = 1000 / speed;
         moveTimer = new Timer(interval, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -62,23 +62,22 @@ public abstract class Zombie extends Entity {
         }
         if (board.getPlants().containsKey(currentPosition)) {
             System.out.println(this.getName() + " encontró una planta en " + nextPosition + " y comenzará a atacar.");
-            stopMoving(); // Detener movimiento mientras ataca
-            startAttacking(board); // Iniciar ataque
+            stopMoving();
+            startAttacking(board);
         } else {
             this.setPosition(nextPosition);
             board.getZombies().remove(currentPosition);
             board.getZombies().put(nextPosition, this);
             System.out.println(this.getName() + " se movió a la posición " + nextPosition);
-
         }
     }
 
     public void startAttacking(Board board) {
         if (attackTimer != null && attackTimer.isRunning()) {
             System.out.println(this.getName() + " ya está atacando.");
-            return; // Evitar reiniciar el temporizador
+            return;
         }
-        int interval = (int) (attackSpeed * 1000); // Convertir segundos a milisegundos
+        int interval = (int) (attackSpeed * 1000);
         attackTimer = new Timer(interval, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,41 +98,38 @@ public abstract class Zombie extends Entity {
         Point currentPosition = this.getPosition();
         if (board.getPlants().containsKey(currentPosition)) {
             Plant target = board.getPlants().get(currentPosition);
-            target.receiveDamage(this.damage); // Aplicar daño
+            target.receiveDamage(this.damage);
             System.out.println(this.getName() + " atacó a " + target.getName() + " causando " + this.damage + " de daño. Vida restante de la planta: " + target.getLife());
-            if (!target.isAlive()) { // Si la planta muere
-                board.getPlants().remove(currentPosition); // Remover planta del tablero
+            if (!target.isAlive()) {
+                board.getPlants().remove(currentPosition);
                 System.out.println(target.getName() + " ha sido eliminada.");
-                stopAttacking(); // Detener ataque
-                startMoving(board); // Reanudar movimiento
+                stopAttacking();
+                startMoving(board);
             }
         } else {
             System.out.println(this.getName() + " no encontró plantas en su posición actual.");
-            stopAttacking(); // Detener ataque si no hay planta
-            startMoving(board); // Reanudar movimiento si no hay plantas
+            stopAttacking();
+            startMoving(board);
         }
     }
 
-    public JLabel getZombieLabel(Zombie zombie) {
-        return new JLabel();
-    }
-
     public void receiveDamage(int damage) {
-    this.life -= damage;
-    System.out.println(type + " recibe " + damage + " de daño. Vida restante: " + life);
-    if (!isAlive()) {
-        stopMoving();
-        stopAttacking();
-        SwingUtilities.invokeLater(() -> {
-            JLabel zombieLabel = getZombieLabel(this);
-            if (zombieLabel != null) {
-                ImageIcon deadZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/DeadZombie.gif"));
-                zombieLabel.setIcon(deadZombieIcon);
-                zombieLabel.repaint();
-            }
-        });
+        this.life -= damage;
+        System.out.println(type + " recibe " + damage + " de daño. Vida restante: " + life);
+        if (!isAlive()) {
+            stopMoving();
+            stopAttacking();
+            SwingUtilities.invokeLater(() -> {
+                JLabel zombieLabel = gameWindow.getZombieLabel(this);
+                if (zombieLabel != null) {
+                    ImageIcon deadZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/DeadZombie.gif"));
+                    zombieLabel.setIcon(deadZombieIcon);
+                    zombieLabel.setVisible(true);
+                    zombieLabel.repaint();
+                }
+            });
+        }
     }
-}
 
     public boolean isAlive() {
         return this.life > 0;
@@ -149,7 +145,6 @@ public abstract class Zombie extends Entity {
         System.out.println(type + " ya no está congelado.");
     }
 
-    // Getters
     public int getLife() {
         return life;
     }
