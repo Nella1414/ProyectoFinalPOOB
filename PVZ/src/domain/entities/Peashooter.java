@@ -15,12 +15,12 @@ public class Peashooter extends OffensivePlant {
     public void attack(Board board) {
         int peashooterRow = board.getRowFromYForPlants(this.getPosition().y);
         Zombie target = board.findClosestZombieInRow(peashooterRow, this.getPosition().x);
-        System.out.println("Target row: " + target + ", Peashooter row: " + peashooterRow);
+        System.out.println("Target: " + target + ", Peashooter row: " + peashooterRow);
         if (target != null) {
             int targetRow = board.getRowFromYForZombies(target.getPosition().y);
             System.out.println("Target row: " + targetRow + ", Peashooter row: " + peashooterRow);
             // Verificar si el zombie está en la misma fila y dentro del rango de ataque del Peashooter
-            if (targetRow == peashooterRow && target.getPosition().x <= this.getPosition().x + 90) { // Asumiendo que 90 es el rango de ataque
+            if (targetRow == peashooterRow) { // Asumiendo que 90 es el rango de ataque
                 System.out.println("Peashooter encontró un objetivo en su fila.");
                 target.receiveDamage(this.getDamage());
                 System.out.println(this.getName() + " atacó a " + target.getName() + " causando " + this.getDamage() + " de daño.");

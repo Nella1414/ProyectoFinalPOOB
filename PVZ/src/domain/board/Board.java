@@ -159,19 +159,22 @@ public abstract class Board {
     }
 
     public Zombie findClosestZombieInRow(int row, int startColumn) {
-        Zombie closestZombie = null;
-        int minDistance = Integer.MAX_VALUE;
-
-        for (Point pos : zombies.keySet()) {
-            int zombieRow = getRowFromYForZombies(pos.y) + 1;
-            System.out.println("Revisando posición de zombi: " + pos + " en fila " + zombieRow);
-            if (zombieRow == row) {
+    Zombie closestZombie = null;
+    int minDistance = Integer.MAX_VALUE;
+    for (Point pos : zombies.keySet()) {
+        int zombieRow = getRowFromYForZombies(pos.y);
+        System.out.println("Revisando posición de zombi: " + pos + " en fila " + zombieRow);
+        if (zombieRow == row && pos.x >= startColumn) {
+            int distance = pos.x - startColumn;
+            if (distance < minDistance) {
+                minDistance = distance;
                 closestZombie = zombies.get(pos);
                 System.out.println("Zombi más cercano actualizado: " + closestZombie.getName() + " en posición " + pos);
             }
         }
-        return closestZombie;
     }
+    return closestZombie;
+}
 
     public void printBoardState() {
         System.out.println("Estado del tablero:");
