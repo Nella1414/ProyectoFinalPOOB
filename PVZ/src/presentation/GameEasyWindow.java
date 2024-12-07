@@ -216,22 +216,10 @@ public class GameEasyWindow extends JFrame {
         int gridY = 210 + (row * gridSize);
         int gridX = maxX; // Zombies appear at the last position of the grid
 
-        try {
-            BasicZombie newZombie = new BasicZombie(board, new Point(gridX, gridY), this);
-            if (board.addZombie(newZombie, new Point(gridX, gridY))) {
-                JLabel zombieLabel = new JLabel(newZombie.getIcon());
-                zombieLabel.setBounds(gridX, gridY, newZombie.getIcon().getIconWidth(), newZombie.getIcon().getIconHeight());
-                zombieLabel.setName(newZombie.getName());
-                background.add(zombieLabel);
-                background.setComponentZOrder(zombieLabel, 0);
-                background.repaint(); // Ensure the panel is repainted
-                System.out.println("Zombie spawned at: " + gridX + ", " + gridY);
-            } else {
-                System.out.println("Failed to spawn zombie at: " + gridX + ", " + gridY);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        Point position = new Point(gridX, gridY);
+        ZombieFactory factory = new BasicZombieFactory(); // Use the factory to create a zombie
+        Zombie zombie = factory.createZombie(board, position, this);
+        board.addZombie(zombie, position);
     }
 
     public void removeZombie(Zombie zombie) {
