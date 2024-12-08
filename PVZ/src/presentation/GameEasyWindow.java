@@ -48,6 +48,7 @@ public class GameEasyWindow extends JFrame {
         this.board = board;
         this.suns = board.getSunPoints();
         new GameLogicWorker(board, this).execute();
+        startZombieSpawning();
 
 
         // Añadir más componentes y lógica basada en la dificultad
@@ -208,6 +209,30 @@ public class GameEasyWindow extends JFrame {
             }
         }
         return null;
+    }
+
+    private int getZombieSpawnIntervalBasedOnDifficulty() {
+        switch (difficulty) {
+            case "Novato":
+                return 5000; // Para cada 5 segundos
+            case "Medio":
+                return 3000; // Para cada 3 segundos
+            case "Experto":
+                return 1000; // Para cada 1 segundo
+            default:
+                return 5000; // Por defecto, para cada 5 segundos
+        }
+    }
+
+    public void startZombieSpawning() {
+        int interval = getZombieSpawnIntervalBasedOnDifficulty();
+        Timer spawnTimer = new Timer(interval, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                spawnRandomZombie();
+            }
+        });
+        spawnTimer.start();
     }
 
     public void spawnRandomZombie() {

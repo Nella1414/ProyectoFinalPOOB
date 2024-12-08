@@ -140,6 +140,11 @@ public abstract class Zombie extends Entity {
         }
     }
 
+    public boolean isAttacking() {
+        return attackTimer != null && attackTimer.isRunning();
+    }
+
+
     public void receiveDamage(int damage) {
         this.life -= damage;
         System.out.println(type + " recibe " + damage + " de daño. Vida restante: " + life);
