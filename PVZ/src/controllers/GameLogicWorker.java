@@ -12,10 +12,20 @@ public class GameLogicWorker extends SwingWorker<Void, Void> {
 
     public GameLogicWorker(Board board, GameEasyWindow gameWindow) {
         gameWindow.spawnRandomZombie();
-
+        if (gameWindow.getDifficulty() == "Medio") {
+            Timer zombieSpawnTimer = new Timer(5000, e -> gameWindow.spawnRandomZombie()); // Cada 10 segundos
+            zombieSpawnTimer.start();
+        }
+        if (gameWindow.getDifficulty() == "Experto") {
+            Timer zombieSpawnTimer = new Timer(3000, e -> gameWindow.spawnRandomZombie()); // Cada 5 segundos
+            zombieSpawnTimer.start();
+        }
+        else {
+            Timer zombieSpawnTimer = new Timer(10000, e -> gameWindow.spawnRandomZombie()); // Cada 20 segundos
+            zombieSpawnTimer.start();
+        }
         // O usa un temporizador para generar zombis en intervalos regulares
-        Timer zombieSpawnTimer = new Timer(10000, e -> gameWindow.spawnRandomZombie()); // Cada 10 segundos
-        zombieSpawnTimer.start();
+
         board.updateZombiesWhenLawnMower();
         this.board = board;
         this.gameWindow = gameWindow;

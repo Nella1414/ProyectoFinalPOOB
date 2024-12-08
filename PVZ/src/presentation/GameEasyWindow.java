@@ -234,6 +234,11 @@ public class GameEasyWindow extends JFrame {
 //        spawnTimer.start();
 //    }
 
+    // Get difficulty
+    public String getDifficulty() {
+        return difficulty;
+    }
+
     public void spawnRandomZombie() {
         Random random = new Random();
         int row = random.nextInt(5); // Assuming there are 5 rows
