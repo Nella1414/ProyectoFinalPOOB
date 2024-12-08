@@ -8,4 +8,9 @@ public class DefensivePlant extends Plant {
     public DefensivePlant(String name, int cost, int life, String type, Point position, String imagePath, Board board) {
         super(name, cost, life, type, position, imagePath, board);
     }
+
+    @Override
+    public void attack(Board board) {
+        System.out.println(this.getName() + " atacó.");
+    }
 }

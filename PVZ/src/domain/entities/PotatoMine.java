@@ -31,4 +31,9 @@ public class PotatoMine extends SupportPlant {
             stopAction();
         }
     }
+
+    @Override
+    public void attack(Board board) {
+
+    }
 }

@@ -20,4 +20,9 @@ public class Sunflower extends SupportPlant {
         System.out.println(this.getName() + " ha generado 25 soles.");
         }
     }
+
+    @Override
+    public void attack(Board board) {
+
+    }
 }

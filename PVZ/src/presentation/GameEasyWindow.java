@@ -49,6 +49,28 @@ public class GameEasyWindow extends JFrame {
         this.suns = board.getSunPoints();
         new GameLogicWorker(board, this).execute();
 
+        JButton pauseButton = new JButton("Pausar");
+        pauseButton.setBounds(1300, 10, 80, 30);
+        pauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pauseGame();
+            }
+        });
+        background.add(pauseButton);
+        background.setComponentZOrder(pauseButton, 0);
+
+        JButton resumeButton = new JButton("Reanudar");
+        resumeButton.setBounds(1300, 50, 80, 30);
+        resumeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resumeGame();
+            }
+        });
+        background.add(resumeButton);
+        background.setComponentZOrder(resumeButton, 0);
+
 
         // Añadir más componentes y lógica basada en la dificultad
 
@@ -233,6 +255,27 @@ public class GameEasyWindow extends JFrame {
 //        });
 //        spawnTimer.start();
 //    }
+
+    public void pauseGame() {
+        for (Zombie zombie : board.getZombies().values()) {
+            zombie.stopMoving();
+            zombie.stopAttacking();
+        }
+        for (Plant plant : board.getPlants().values()) {
+            plant.stopAttacking();
+
+        }
+    }
+
+    public void resumeGame() {
+        for (Zombie zombie : board.getZombies().values()) {
+            zombie.startMoving(board);
+            zombie.startAttacking(board);
+        }
+        for (Plant plant : board.getPlants().values()) {
+            plant.startAttacking(board);
+        }
+    }
 
     // Get difficulty
     public String getDifficulty() {

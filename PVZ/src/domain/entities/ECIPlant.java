@@ -17,4 +17,9 @@ public class ECIPlant extends SupportPlant{
         // Aquí puedes agregar lógica para aumentar recursos o actualizar el tablero
         }
     }
+
+    @Override
+    public void attack(Board board) {
+
+    }
 }
