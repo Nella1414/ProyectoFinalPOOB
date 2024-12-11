@@ -49,34 +49,42 @@ public abstract class Zombie extends Entity {
     }
 
     public void move(Board board) {
-    if (isfreezed) {
-        System.out.println(this.getName() + " está congelado y no puede moverse.");
-        return;
-    }
-    Point currentPosition = this.getPosition();
-    Point nextPosition = new Point(currentPosition.x - 35, currentPosition.y);
-    int currentColumn = board.getColumnFromX(currentPosition.x);
-    int nextColumn = board.getColumnFromX(nextPosition.x);
+        if (isfreezed) {
+            System.out.println(this.getName() + " está congelado y no puede moverse.");
+            return;
+        }
+        Point currentPosition = this.getPosition();
+        Point nextPosition = new Point(currentPosition.x - 35, currentPosition.y);
+        int nextColumn = board.getColumnFromX(nextPosition.x);
 
-    if (nextColumn < 1) {
-        System.out.println(this.getName() + " alcanzó el borde del tablero. ¡Juego terminado!");
-        stopMoving();
-        return;
+        if (nextColumn < 1) {
+            System.out.println(this.getName() + " alcanzó el borde del tablero. ¡Juego terminado!");
+            stopMoving();
+            return;
+        }
+
+        // Verificar si hay plantas en la misma fila en la columna siguiente
+        boolean hasPlantsInNextColumnSameRow = board.getPlants().values().stream()
+                .anyMatch(plant -> board.getColumnFromX(plant.getPosition().x) == nextColumn && plant.getPosition().y == currentPosition.y);
+
+        if (hasPlantsInNextColumnSameRow) {
+            System.out.println(this.getName() + " encontró una planta en la columna " + nextColumn + " y comenzará a atacar.");
+            stopMoving();
+            startAttacking(board);
+        } else {
+            this.setPosition(nextPosition);
+            board.getZombies().remove(currentPosition);
+            board.getZombies().put(nextPosition, this);
+            System.out.println(this.getName() + " se movió a la posición " + nextPosition);
+        }
     }
 
-    if (board.isPlantInColumn(nextColumn)) {
-        System.out.println(this.getName() + " encontró una planta en la columna " + nextColumn + " y comenzará a atacar.");
-        stopMoving();
-        startAttacking(board);
-    } else {
-        this.setPosition(nextPosition);
-        board.getZombies().remove(currentPosition);
-        board.getZombies().put(nextPosition, this);
-        System.out.println(this.getName() + " se movió a la posición " + nextPosition);
-    }
-}
+public void startAttacking(Board board) {
+    // Verificar si hay plantas en la misma fila al frente del zombie
+    boolean hasPlantsInRowAhead = board.getPlants().values().stream()
+            .anyMatch(plant -> plant.getPosition().y == this.getPosition().y && plant.getPosition().x > this.getPosition().x);
 
-    public void startAttacking(Board board) {
+    if (hasPlantsInRowAhead) {
         if (attackTimer != null && attackTimer.isRunning()) {
             System.out.println(this.getName() + " ya está atacando.");
             return;
@@ -101,7 +109,11 @@ public abstract class Zombie extends Entity {
                 zombieLabel.repaint();
             }
         });
+    } else {
+        // Detener el ataque si no hay plantas en la fila al frente
+        stopAttacking();
     }
+}
 
     public void stopAttacking() {
         if (attackTimer != null) {
