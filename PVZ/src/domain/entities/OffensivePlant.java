@@ -12,8 +12,8 @@ public abstract class OffensivePlant extends Plant {
     private int damage;
     private float attackSpeed; // En segundos
 
-    public OffensivePlant(String name, int cost, int life, String type, int damage, float attackSpeed, Point position,String imagePath,Board board) {
-        super(name, cost, life, type, position, imagePath,board);
+    public OffensivePlant(int x, int y ,String name, int cost, int life, String type, int damage, float attackSpeed, Point position,String imagePath,Board board) {
+        super(x,y,name, cost, life, type, position, imagePath,board);
         this.damage = damage;
         this.attackSpeed = attackSpeed;
     }

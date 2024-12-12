@@ -6,8 +6,8 @@ import java.awt.*;
 
 public class ECIPlant extends SupportPlant{
 
-    public ECIPlant(Board board, Point position) {
-        super("ECIPlant",75,150,"SupportPlant",20000,position, "assets/Images/inGame/plants/ECIPlant.gif",board);
+    public ECIPlant(int x, int y,Board board, Point position) {
+        super(x,y,"ECIPlant",75,150,"SupportPlant",20000,position, "assets/Images/inGame/plants/ECIPlant.gif",board);
     }
     @Override
     public void action() {

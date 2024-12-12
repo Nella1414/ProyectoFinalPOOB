@@ -4,10 +4,12 @@ package domain.board;
 import domain.entities.Plant;
 import domain.entities.PotatoMine;
 import domain.entities.Zombie;
+import domain.entities.shoot;
 import domain.tools.LawnMower;
 import domain.tools.Tool;
 
 import java.awt.*;
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,10 @@ public abstract class Board {
     protected Map<Point, Zombie> zombies;
     private int sunPoints;
 
+    private ArrayList<Zombie> zombiesList = new ArrayList<Zombie>();
+    private ArrayList<Plant> plantsList = new ArrayList<Plant>();
+    private ArrayList<shoot> shoots = new ArrayList<shoot>();
+
     public Board(int rows, int columns, int sunPoints) {
         this.rows = rows;
         this.columns = columns;
@@ -33,6 +39,18 @@ public abstract class Board {
             lawnMowers.put(i, new LawnMower("LawnMower", i));
         }
         updateZombiesWhenLawnMower();
+    }
+
+    public void addShoot(shoot shoot) {
+        shoots.add(shoot);
+    }
+
+    public ArrayList<shoot> getShoots() {
+        return shoots;
+    }
+
+    public void removeShoot(shoot shoot) {
+        shoots.remove(shoot);
     }
 
     public int getRowFromYForPlants(int y) {
@@ -78,6 +96,9 @@ public abstract class Board {
     }
 
     public boolean addPlant(Plant plant, Point position) {
+
+
+        plantsList.add(plant);
         // Validar si la posición está dentro del tablero
         if (position.x >= columns || position.y >= rows) {
             System.out.println("La posición " + position + " está fuera de los límites del tablero.");
@@ -105,6 +126,7 @@ public abstract class Board {
 
 
     public boolean addZombie(Zombie zombie, Point position) {
+        zombiesList.add(zombie);
         if (position.y >= rows || zombies.containsKey(position)) {
             return false;
         }
@@ -147,6 +169,14 @@ public abstract class Board {
         plants.remove(position);
     }
 
+    public void removePlantList(Plant plant) {
+        plantsList.remove(plant);
+    }
+
+    public void removeZombieList(Zombie zombie) {
+        zombiesList.remove(zombie);
+    }
+
     public void removeZombie(Point position) {
         zombies.remove(position);
     }
@@ -177,13 +207,13 @@ public abstract class Board {
     int minDistance = Integer.MAX_VALUE;
     for (Point pos : zombies.keySet()) {
         int zombieRow = getRowFromYForZombies(pos.y);
-        System.out.println("Revisando posición de zombi: " + pos + " en fila " + zombieRow);
+//        System.out.println("Revisando posición de zombi: " + pos + " en fila " + zombieRow);
         if (zombieRow == row && pos.x >= startColumn) {
             int distance = pos.x - startColumn;
             if (distance < minDistance) {
                 minDistance = distance;
                 closestZombie = zombies.get(pos);
-                System.out.println("Zombi más cercano actualizado: " + closestZombie.getName() + " en posición " + pos);
+//                System.out.println("Zombi más cercano actualizado: " + closestZombie.getName() + " en posición " + pos);
             }
         }
     }
@@ -191,18 +221,18 @@ public abstract class Board {
 }
 
     public void printBoardState() {
-        System.out.println("Estado del tablero:");
-        System.out.println("Plantas:");
+//        System.out.println("Estado del tablero:");
+//        System.out.println("Plantas:");
         for (Point pos : plants.keySet()) {
             Plant plant = plants.get(pos);
-            System.out.println(" - " + plant.getName() + " en posición " + getRowFromYForPlants(pos.y) + " en Y, y con vida: " + plant.getLife());
-            System.out.println(" - " + sunPoints + " soles");
+//            System.out.println(" - " + plant.getName() + " en posición " + getRowFromYForPlants(pos.y) + " en Y, y con vida: " + plant.getLife());
+//            System.out.println(" - " + sunPoints + " soles");
         }
-        System.out.println("Zombis:");
+//        System.out.println("Zombis:");
         for (Point pos : zombies.keySet()) {
             Zombie zombie = zombies.get(pos);
             int zombieRow = getRowFromYForZombies(pos.y);
-            System.out.println(" - " + zombie.getName() + " en posición " + zombieRow + " en Y, y con vida: " + zombie.getLife());
+//            System.out.println(" - " + zombie.getName() + " en posición " + zombieRow + " en Y, y con vida: " + zombie.getLife());
         }
     }
 
@@ -216,25 +246,34 @@ public abstract class Board {
 
         List<Point> toRemove = new ArrayList<>();
 
-        for (Map.Entry<Point, Zombie> entry : entries) {
-            Zombie zombie = entry.getValue();
-            zombie.move(this); // Mover al zombi
-
-            // Activar la podadora si el zombi alcanza el extremo izquierdo
-            if (zombie.getPosition().x == 0) {
-                LawnMower mower = lawnMowers.get(zombie.getPosition().y);
-                if (mower != null) {
-                    mower.activate(this);
-                    toRemove.add(entry.getKey()); // Marcar la posición para eliminar
-                    System.out.println("Zombie eliminado por LawnMower en posición " + zombie.getPosition());
-                }
-            }
-        }
+//        for (Map.Entry<Point, Zombie> entry : entries) {
+//            Zombie zombie = entry.getValue();
+//            zombie.move(this); // Mover al zombi
+//
+//            // Activar la podadora si el zombi alcanza el extremo izquierdo
+//            if (zombie.getPosition().x == 0) {
+//                LawnMower mower = lawnMowers.get(zombie.getPosition().y);
+//                if (mower != null) {
+//                    mower.activate(this);
+//                    toRemove.add(entry.getKey()); // Marcar la posición para eliminar
+//                    System.out.println("Zombie eliminado por LawnMower en posición " + zombie.getPosition());
+//                }
+//            }
+//        }
 
         // Aplicar los cambios al mapa fuera del bucle
         for (Point position : toRemove) {
             zombies.remove(position);
         }
+    }
+
+
+    public ArrayList<Zombie> getZombiesList() {
+        return zombiesList;
+    }
+
+    public ArrayList<Plant> getPlantsList() {
+        return plantsList;
     }
 
 

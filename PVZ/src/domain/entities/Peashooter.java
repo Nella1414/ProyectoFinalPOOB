@@ -1,38 +1,58 @@
 package domain.entities;
 
 import domain.board.Board;
+import presentation.GameEasyWindow;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Peashooter extends OffensivePlant {
 
-    public Peashooter(Board board, Point position) {
-        super("Peashooter", 100, 300, "Offensive", 20, 1.5f, position, "assets/Images/inGame/plants/Peashooter.gif", board); // 1.5 segundos entre ataques
+    private shoot shoot;
+    private Timer shootTimer;
+
+    public Peashooter(int x, int y, Board board, Point position) {
+        super(x, y, "Peashooter", 100, 300, "Offensive", 20, 1.5f, position, "assets/Images/inGame/plants/Peashooter.gif", board); // 1.5 segundos entre ataques
+        this.shoot = new shoot(x+25, y+10);
         this.startAttacking(board);
+        startShooting(board);
+    }
+
+
+    private void startShooting(Board board) {
+        shootTimer = new Timer(1500, new ActionListener() { // 1.5 segundos entre disparos
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                shoot newShoot = new shoot(getX() + 25, getY() + 15);
+                board.addShoot(newShoot);
+            }
+        });
+        shootTimer.start();
     }
 
     @Override
     public void attack(Board board) {
         int peashooterRow = board.getRowFromYForPlants(this.getPosition().y);
         Zombie target = board.findClosestZombieInRow(peashooterRow, this.getPosition().x);
-        System.out.println("Target: " + target + ", Peashooter row: " + peashooterRow);
-        if (target != null) {
+
+        if (target != null && target.isAlive()) {
             int targetRow = board.getRowFromYForZombies(target.getPosition().y);
-            System.out.println("Target row: " + targetRow + ", Peashooter row: " + peashooterRow);
-            // Verificar si el zombie está en la misma fila y dentro del rango de ataque del Peashooter
-            if (targetRow == peashooterRow) { // Asumiendo que 90 es el rango de ataque
-                System.out.println("Peashooter encontró un objetivo en su fila.");
+
+            if (targetRow == peashooterRow) {
                 target.receiveDamage(this.getDamage());
-                System.out.println(this.getName() + " atacó a " + target.getName() + " causando " + this.getDamage() + " de daño.");
                 if (!target.isAlive()) {
-                    board.removeZombie(target.getPosition());
-                    System.out.println(target.getName() + " ha sido eliminado.");
+                    board.removeZombieList(target);
                 }
-            } else {
-                System.out.println(this.getName() + " no encontró objetivos dentro del rango.");
             }
-        } else {
-            System.out.println(this.getName() + " no encontró objetivos en su fila.");
         }
     }
+
+    public void stopShooting() {
+        if (shootTimer != null) {
+            shootTimer.stop();
+        }
+    }
+
 }

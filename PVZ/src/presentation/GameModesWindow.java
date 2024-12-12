@@ -137,7 +137,7 @@ public class GameModesWindow extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (isPixelVisible(e, startButton, originalImage2)) {
                     playClickSound("assets/Sounds/2.Click.wav");
-                    showLoadingScreenAndOpenBoard();
+//                    showLoadingScreenAndOpenBoard();
                 }
             }
         };
@@ -173,29 +173,7 @@ public class GameModesWindow extends JFrame {
         }
     }
 
-    private void showLoadingScreenAndOpenBoard() {
-        LoadingScreen loadingScreen = new LoadingScreen(this);
-        SwingWorker<Void, Void> worker = new SwingWorker<>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                // Simulate loading time
-                Thread.sleep(3000);
-                return null;
-            }
 
-            @Override
-            protected void done() {
-                loadingScreen.dispose();
-                initialSuns = Integer.parseInt(sunsField.getText()); // Update initialSuns
-                BoardDay board = new BoardDay(initialSuns); // Create BoardDay with initialSuns
-                entities = List.of(new Sunflower(board, new Point(0, 0)), new Peashooter(board, new Point(0, 0)), new WallNut(board, new Point(0, 0)), new PotatoMine(board, new Point(0, 0)), new ECIPlant(board, new Point(0, 0)));
-                new GameEasyWindow(selectedDifficulty, entities, board).setVisible(true);
-                GameModesWindow.this.dispose();
-            }
-        };
-        worker.execute();
-        loadingScreen.setVisible(true);
-    }
 }
 
 class CustomComboBoxRenderer extends JLabel implements ListCellRenderer<Object> {

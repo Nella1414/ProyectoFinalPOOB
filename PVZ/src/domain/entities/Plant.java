@@ -12,12 +12,23 @@ public abstract class Plant extends Entity {
     Board board;
     double attackSpeed; // Define attackSpeed
     Timer attackTimer;  // Define attackTimer
+    int x,y;
 
-    public Plant(String name, int cost, int life, String type, Point position, String imagePath, Board board) {
+    public Plant(int x, int y,String name, int cost, int life, String type, Point position, String imagePath, Board board) {
         super(name, cost, position, imagePath);
         this.life = life;
         this.type = type;
         this.board = board;
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public int getLife() {
@@ -31,6 +42,7 @@ public abstract class Plant extends Entity {
     public void receiveDamage(int damage) {
         this.life -= damage;
         if (this.life < 0) {
+            board.removePlantList(this);
             this.life = 0;
         }
         System.out.println(this.getName() + " recibió " + damage + " de daño. Vida restante: " + this.life);
@@ -58,4 +70,5 @@ public abstract class Plant extends Entity {
     }
 
     public abstract void attack(Board board); // Define abstract attack method
+
 }

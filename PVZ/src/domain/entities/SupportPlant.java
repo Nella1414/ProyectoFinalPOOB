@@ -8,11 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public abstract class SupportPlant extends Plant {
-    private Timer timer;
     protected int actionSpeed; // Tiempo en milisegundos para realizar su acción
+    private Timer timer;
 
-    public SupportPlant(String name, int cost, int life, String type, int actionSpeed, Point position, String imagePath, Board board) {
-        super(name, cost, life, type,position,imagePath,board);
+    public SupportPlant(int x, int y, String name, int cost, int life, String type, int actionSpeed, Point position, String imagePath, Board board) {
+        super(x, y, name, cost, life, type, position, imagePath, board);
         this.actionSpeed = actionSpeed;
     }
 

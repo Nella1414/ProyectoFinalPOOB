@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public abstract class Zombie extends Entity {
     private final int speed;
@@ -18,8 +19,11 @@ public abstract class Zombie extends Entity {
     private boolean isfreezed;
     private Timer moveTimer;
     private Timer attackTimer;
+    private int x, y;
 
-    public Zombie(String name, int cost, int life, int speed, int damage, float attackSpeed, String type, Board board, Point position, String imagePath, GameEasyWindow gameWindow) {
+    private JLabel zombieLabel;
+
+    public Zombie(int x, int y, String name, int cost, int life, int speed, int damage, float attackSpeed, String type, Board board, Point position, String imagePath, GameEasyWindow gameWindow) {
         super(name, cost, position, imagePath);
         this.life = life;
         this.speed = speed;
@@ -28,15 +32,19 @@ public abstract class Zombie extends Entity {
         this.type = type;
         this.isfreezed = false;
         this.gameWindow = gameWindow;
+        this.x = position.x;
+        this.y = position.y;
+        createZombieLabel();
         startMoving(board);
     }
 
     public void startMoving(Board board) {
-        int interval = 1000 / speed;
+        int interval = 100; // 0.1 seconds
         moveTimer = new Timer(interval, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 move(board);
+                zombieLabel.setLocation(getX(), getY()); // Update the label's position
             }
         });
         moveTimer.start();
@@ -53,67 +61,80 @@ public abstract class Zombie extends Entity {
             System.out.println(this.getName() + " está congelado y no puede moverse.");
             return;
         }
-        Point currentPosition = this.getPosition();
-        Point nextPosition = new Point(currentPosition.x - 35, currentPosition.y);
-        int nextColumn = board.getColumnFromX(nextPosition.x);
+        setX(getX() - 2); // Move 2 pixels to the left
+        int currentX = getX();
+        int currentY = getY();
+        int nextX = currentX - 2;
+        int nextColumn = board.getColumnFromX(nextX);
 
         if (nextColumn < 1) {
-            System.out.println(this.getName() + " alcanzó el borde del tablero. ¡Juego terminado!");
+//            System.out.println(this.getName() + " alcanzó el borde del tablero. ¡Juego terminado!");
             stopMoving();
             return;
         }
 
-        // Verificar si hay plantas en la misma fila en la columna siguiente
-        boolean hasPlantsInNextColumnSameRow = board.getPlants().values().stream()
-                .anyMatch(plant -> board.getColumnFromX(plant.getPosition().x) == nextColumn && plant.getPosition().y == currentPosition.y);
+        ArrayList<Plant> plantsInRow = board.getPlantsList();
+//        System.out.println(plantsInRow);
+        for (Plant plant : plantsInRow) {
+            System.out.println(plant.getX() + " " + plant.getY() + " " + nextX + " " + currentY);
+            if (Math.abs(plant.getX() - nextX) < 7 && Math.abs(plant.getY() - currentY) < 70) {
+                System.out.println("holamundo");
+                System.out.println(this.getName() + " encontró una planta en su camino.");
+                stopMoving();
+                startAttacking(board, plant);
+                return;
+            }
+        }
 
-        if (hasPlantsInNextColumnSameRow) {
-            System.out.println(this.getName() + " encontró una planta en la columna " + nextColumn + " y comenzará a atacar.");
-            stopMoving();
-            startAttacking(board);
+        ArrayList<shoot> shootsInRow = board.getShoots();
+
+        for (shoot shoot : shootsInRow) {
+            if (Math.abs(shoot.getX() - nextX) < 7 && Math.abs(shoot.getY() - currentY) < 70) {
+                board.removeShoot(shoot);
+                shoot.removeShootLabel();
+                return;
+            }
+        }
+
+
+        setX(nextX);
+        board.getZombies().put(new Point(nextX, currentY), this);
+//        System.out.println(this.getName() + " se movió a la posición (" + nextX + ", " + currentY + ")");
+        zombieLabel.setLocation(nextX, currentY); // Update the label's position and repaint
+    }
+
+    public void startAttacking(Board board, Plant targetPlant) {
+        if (targetPlant != null) {
+            if (attackTimer != null && attackTimer.isRunning()) {
+                System.out.println(this.getName() + " ya está atacando.");
+                return;
+            }
+            int interval = (int) (attackSpeed * 1000);
+            attackTimer = new Timer(interval, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    attack(board, targetPlant);
+                }
+            });
+            attackTimer.start();
+            System.out.println(this.getName() + " comenzó a atacar.");
+
+            // Cambiar la imagen del zombie cuando comienza a atacar
+            SwingUtilities.invokeLater(() -> {
+                JLabel zombieLabel = gameWindow.getZombieLabel(this);
+                if (zombieLabel != null) {
+                    ImageIcon attackingZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/ConeheadZombieAttack.gif"));
+                    zombieLabel.setIcon(attackingZombieIcon);
+                    zombieLabel.setVisible(true);
+                    zombieLabel.repaint();
+                }
+            });
         } else {
-            this.setPosition(nextPosition);
-            board.getZombies().remove(currentPosition);
-            board.getZombies().put(nextPosition, this);
-            System.out.println(this.getName() + " se movió a la posición " + nextPosition);
+            // Detener el ataque si no hay plantas en la fila al frente
+            stopAttacking();
         }
     }
 
-public void startAttacking(Board board) {
-    // Verificar si hay plantas en la misma fila al frente del zombie
-    boolean hasPlantsInRowAhead = board.getPlants().values().stream()
-            .anyMatch(plant -> plant.getPosition().y == this.getPosition().y && plant.getPosition().x > this.getPosition().x);
-
-    if (hasPlantsInRowAhead) {
-        if (attackTimer != null && attackTimer.isRunning()) {
-            System.out.println(this.getName() + " ya está atacando.");
-            return;
-        }
-        int interval = (int) (attackSpeed * 1000);
-        attackTimer = new Timer(interval, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                attack(board);
-            }
-        });
-        attackTimer.start();
-        System.out.println(this.getName() + " comenzó a atacar.");
-
-        // Cambiar la imagen del zombie cuando comienza a atacar
-        SwingUtilities.invokeLater(() -> {
-            JLabel zombieLabel = gameWindow.getZombieLabel(this);
-            if (zombieLabel != null) {
-                ImageIcon attackingZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/ConeheadZombieAttack.gif"));
-                zombieLabel.setIcon(attackingZombieIcon);
-                zombieLabel.setVisible(true);
-                zombieLabel.repaint();
-            }
-        });
-    } else {
-        // Detener el ataque si no hay plantas en la fila al frente
-        stopAttacking();
-    }
-}
 
     public void stopAttacking() {
         if (attackTimer != null) {
@@ -121,36 +142,34 @@ public void startAttacking(Board board) {
         }
     }
 
-    public void attack(Board board) {
-        Point currentPosition = this.getPosition();
-        if (board.getPlants().containsKey(currentPosition)) {
-            Plant target = board.getPlants().get(currentPosition);
-            target.receiveDamage(this.damage);
-            System.out.println(this.getName() + " atacó a " + target.getName() + " causando " + this.damage + " de daño. Vida restante de la planta: " + target.getLife());
+  public void attack(Board board, Plant targetPlant) {
+    if (targetPlant != null) {
+        targetPlant.receiveDamage(this.damage);
+        System.out.println(this.getName() + " atacó a " + targetPlant.getName() + " causando " + this.damage + " de daño. Vida restante de la planta: " + targetPlant.getLife());
 
-            // Cambiar la imagen del zombie cuando ataca
-            SwingUtilities.invokeLater(() -> {
-                JLabel zombieLabel = gameWindow.getZombieLabel(this);
-                if (zombieLabel != null) {
-                    ImageIcon attackingZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/AttackingZombie.gif"));
-                    zombieLabel.setIcon(attackingZombieIcon);
-                    zombieLabel.setVisible(true);
-                    zombieLabel.repaint();
-                }
-            });
-
-            if (!target.isAlive()) {
-                board.getPlants().remove(currentPosition);
-                System.out.println(target.getName() + " ha sido eliminada.");
-                stopAttacking();
-                startMoving(board);
+        // Cambiar la imagen del zombie cuando ataca
+        SwingUtilities.invokeLater(() -> {
+            JLabel zombieLabel = gameWindow.getZombieLabel(this);
+            if (zombieLabel != null) {
+                ImageIcon attackingZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/AttackingZombie.gif"));
+                zombieLabel.setIcon(attackingZombieIcon);
+                zombieLabel.setVisible(true);
+                zombieLabel.repaint();
             }
-        } else {
-            System.out.println(this.getName() + " no encontró plantas en su posición actual.");
+        });
+
+        if (!targetPlant.isAlive()) {
+            board.getPlants().remove(targetPlant.getPosition());
+            System.out.println(targetPlant.getName() + " ha sido eliminada.");
             stopAttacking();
             startMoving(board);
         }
+    } else {
+        System.out.println(this.getName() + " no encontró plantas en su posición actual.");
+        stopAttacking();
+        startMoving(board);
     }
+}
 
     public void receiveDamage(int damage) {
         this.life -= damage;
@@ -159,12 +178,15 @@ public void startAttacking(Board board) {
             stopMoving();
             stopAttacking();
             SwingUtilities.invokeLater(() -> {
-                JLabel zombieLabel = gameWindow.getZombieLabel(this);
+                JLabel zombieLabel = getZombieLabel();
+
+                System.out.println(zombieLabel);
+                System.out.println(zombieLabel);
                 if (zombieLabel != null) {
-                    ImageIcon deadZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/DeadZombie.gif"));
-                    zombieLabel.setIcon(deadZombieIcon);
-                    zombieLabel.setVisible(true);
-                    zombieLabel.repaint();
+                    System.out.println("Zombie removed from interface: " + this.getName());
+                    gameWindow.removeZombieLabel(zombieLabel);
+
+                    System.out.println("Zombie removed from interface: " + this.getName());
                 }
             });
         }
@@ -206,5 +228,32 @@ public void startAttacking(Board board) {
 
     public boolean getIsfreezed() {
         return this.isfreezed;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    private void createZombieLabel() {
+        if (zombieLabel != null) {
+            gameWindow.removeZombieLabel(zombieLabel); // Remove the existing label if it exists
+        }
+        zombieLabel = new JLabel();
+        ImageIcon zombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/ConeheadZombie.gif"));
+        zombieLabel.setIcon(zombieIcon);
+        zombieLabel.setBounds(getX(), getY(), zombieIcon.getIconWidth(), zombieIcon.getIconHeight());
+        gameWindow.addZombieLabel(this, zombieLabel);
+    }
+
+    public JLabel getZombieLabel() {
+        return zombieLabel;
     }
 }

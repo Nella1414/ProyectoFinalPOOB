@@ -6,8 +6,8 @@ import java.awt.*;
 
 public class PotatoMine extends SupportPlant {
     private boolean isArmed = false;
-    public PotatoMine(Board board,Point position) {
-        super("PotatoMine", 25, 300, "SupportPlant", 5000,position,"assets/Images/inGame/plants/PotatoMine/PotatoMine.gif",board); // 5000 ms = 5 segundos
+    public PotatoMine(int x, int y,Board board,Point position) {
+        super(x,y,"PotatoMine", 25, 300, "SupportPlant", 5000,position,"assets/Images/inGame/plants/PotatoMine/PotatoMine.gif",board); // 5000 ms = 5 segundos
         startAction();
     }
 

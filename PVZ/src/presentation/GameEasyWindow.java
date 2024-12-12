@@ -155,7 +155,9 @@ public class GameEasyWindow extends JFrame {
                         for (Entity entity : entitiesInGame) {
                             if (entity.getPosition().equals(new Point(gridX, gridY))) {
                                 entitiesInGame.remove(entity);
+                                Plant plant = (Plant) entity;
                                 board.removePlant(entity.getPosition());
+                                board.removePlantList(plant);
 
                                 Component componentToRemove = null;
                                 for (Component component : background.getComponents()) {
@@ -176,10 +178,11 @@ public class GameEasyWindow extends JFrame {
                     } else if (selectedPlant != null) {
                         // Add plant if a plant is selected
                         try {
-                            Plant newPlant = (Plant) selectedPlant.getClass().getConstructor(Board.class, Point.class).newInstance(board, new Point(gridX, gridY));
+                            Plant newPlant = (Plant) selectedPlant.getClass().getConstructor(int.class, int.class, Board.class, Point.class).newInstance(gridX, gridY, board, new Point(gridX, gridY));
                             if (board.addPlant(newPlant, new Point(gridX, gridY))) {
                                 entitiesInGame.add(newPlant);
                                 JLabel plantLabel = new JLabel(newPlant.getIcon());
+                                plantLabel.setName(newPlant.getName()); // Set the name of the label
                                 plantLabel.setBounds(gridX + ((90 - newPlant.getIcon().getIconWidth()) / 2), gridY, newPlant.getIcon().getIconWidth(), newPlant.getIcon().getIconHeight());
                                 background.add(plantLabel);
                                 background.setComponentZOrder(plantLabel, 0);
@@ -203,15 +206,22 @@ public class GameEasyWindow extends JFrame {
 
         // Dibujar la cuadrícula
         background.setGridSize(gridSize);
+        startPlantHealthCheck();
+
 
     }
 
     public static void main(String[] args) {
         // Entidades de ejemplo
         BoardDay board = new BoardDay(1000);
-        List<Entity> entities = List.of(new Sunflower(board, new Point(0, 0)), new Peashooter(board, new Point(0, 0)), new WallNut(board, new Point(0, 0)), new PotatoMine(board, new Point(0, 0)), new ECIPlant(board, new Point(0, 0)));
+        List<Entity> entities = List.of(new Sunflower(0, 0, board, new Point(0, 0)), new Peashooter(0, 0, board, new Point(0, 0)), new WallNut(0, 0, board, new Point(0, 0)), new PotatoMine(0, 0, board, new Point(0, 0)), new ECIPlant(0, 0, board, new Point(0, 0)));
+        for (Entity entity : entities) {
+            if (entity instanceof Peashooter) {
+                Peashooter peashooter = (Peashooter) entity;
+                peashooter.stopShooting();
 
-
+            }
+        }
         SwingUtilities.invokeLater(() -> {
             GameEasyWindow game = new GameEasyWindow("Novato", new ArrayList<>(entities), board); // Convert to mutable list
             game.setVisible(true);
@@ -231,6 +241,8 @@ public class GameEasyWindow extends JFrame {
         }
         return null;
     }
+
+
 //
 //    private int getZombieSpawnIntervalBasedOnDifficulty() {
 //        switch (difficulty) {
@@ -270,7 +282,7 @@ public class GameEasyWindow extends JFrame {
     public void resumeGame() {
         for (Zombie zombie : board.getZombies().values()) {
             zombie.startMoving(board);
-            zombie.startAttacking(board);
+//            zombie.startAttacking(board);
         }
         for (Plant plant : board.getPlants().values()) {
             plant.startAttacking(board);
@@ -287,30 +299,25 @@ public class GameEasyWindow extends JFrame {
         int row = random.nextInt(5); // Assuming there are 5 rows
         int gridY = 210 + (row * gridSize);
         int gridX = maxX; // Zombies appear at the last position of the grid
-
+        Zombie zombie = new BasicZombie(gridX, gridY, board, new Point(gridX, gridY), this);
         Point position = new Point(gridX, gridY);
-        ZombieFactory factory = new BasicZombieFactory(); // Use the factory to create a zombie
-        Zombie zombie = factory.createZombie(board, position, this);
         board.addZombie(zombie, position);
     }
 
     public void removeZombie(Zombie zombie) {
-        JLabel zombieLabel = getZombieLabel(zombie);
+        JLabel zombieLabel = zombie.getZombieLabel();
         if (zombieLabel != null) {
-            // Cambiar la imagen del zombie a la imagen de zombie muerto
+            // Change the zombie's image to the dead zombie image
             ImageIcon deadZombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/DeadZombie.gif"));
             zombieLabel.setIcon(deadZombieIcon);
-            zombieLabel.setVisible(true); // Asegurarse de que el JLabel sea visible
+            zombieLabel.setVisible(true); // Ensure the JLabel is visible
             zombieLabel.repaint();
 
-            // Programar la eliminación del JLabel después de unos segundos
-            Timer timer = new Timer(30000, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    background.remove(zombieLabel);
-                    background.repaint(); // Asegurarse de que el panel se repinte
-                    System.out.println("Zombie removed from interface: " + zombie.getName());
-                }
+            // Schedule the removal of the JLabel after a short delay
+            Timer timer = new Timer(100, e -> {
+                background.remove(zombieLabel);
+                background.repaint(); // Ensure the panel is repainted
+                System.out.println("Zombie removed from interface: " + zombie.getName());
             });
             timer.setRepeats(false);
             timer.start();
@@ -318,30 +325,15 @@ public class GameEasyWindow extends JFrame {
     }
 
     public void updateAllZombiePositions() {
-        SwingUtilities.invokeLater(() -> {
-            // Remove all existing zombie labels
-            List<Component> componentsToRemove = new ArrayList<>();
-            for (Component component : background.getComponents()) {
-                if (component instanceof JLabel && component.getName() != null && component.getName().startsWith("BasicZombie")) {
-                    componentsToRemove.add(component);
-                }
+        ArrayList<Zombie> zombiesToRemove = board.getZombiesList();
+        System.out.println("Zombies to remove: " + zombiesToRemove);
+        for (Zombie zombie : board.getZombiesList()) {
+            System.out.println();
+            JLabel zombieLabel = zombie.getZombieLabel();
+            if (zombieLabel != null) {
+                zombieLabel.setBounds(zombie.getX(), zombie.getY(), zombieLabel.getWidth(), zombieLabel.getHeight());
             }
-            for (Component component : componentsToRemove) {
-                background.remove(component);
-            }
-
-            // Add new zombie labels at updated positions
-            for (Zombie zombie : board.getZombies().values()) {
-                Point position = zombie.getPosition();
-                JLabel newZombieLabel = new JLabel(zombie.getIcon());
-                newZombieLabel.setBounds(position.x, position.y, zombie.getIcon().getIconWidth(), zombie.getIcon().getIconHeight());
-                newZombieLabel.setName(zombie.getName());
-                background.add(newZombieLabel);
-                background.setComponentZOrder(newZombieLabel, 0);
-            }
-            background.revalidate(); // Ensure the panel layout is updated
-            background.repaint(); // Ensure the panel is repainted
-        });
+        }
     }
 
     public void updateSuns() {
@@ -409,6 +401,79 @@ public class GameEasyWindow extends JFrame {
         JLabel label = new JLabel(new ImageIcon(resizedImage));
         label.setBounds(x, y, width, height);
         return label;
+    }
+
+    public void addZombieLabel(Zombie zombie, JLabel label) {
+        // Agregar el label al panel de juego
+        background.add(label);
+
+        // Establecer el orden de los componentes
+        // Los componentes con índice más alto se pintan primero
+        background.setComponentZOrder(label, background.getComponentCount() - 1);
+        background.revalidate();
+        background.repaint();
+    }
+
+
+    public void removeZombieLabel(JLabel zombieLabel) {
+        this.remove(zombieLabel);
+        this.repaint();
+    }
+
+    public void startPlantHealthCheck() {
+        int interval = 200; // 1 segundo
+        Timer healthCheckTimer = new Timer(interval, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                checkPlantHealth();
+                paintShots();
+            }
+        });
+        healthCheckTimer.start();
+    }
+
+    private void checkPlantHealth() {
+        for (Plant plant : board.getPlantsList()) {
+            if (plant.getLife() <= 0) {
+                removePlantFromInterface(plant);
+            }
+        }
+    }
+
+    private void removePlantFromInterface(Plant plant) {
+        SwingUtilities.invokeLater(() -> {
+            JLabel plantLabel = getPlantLabel(plant);
+            System.out.println("Plant to remove: " + plant.getName());
+            System.out.println("Plant label: " + plantLabel);
+            if (plantLabel != null) {
+                background.remove(plantLabel);
+                background.repaint();
+                System.out.println("Plant removed from interface: " + plant.getName());
+            }
+        });
+    }
+
+    private JLabel getPlantLabel(Plant plant) {
+        for (Component component : background.getComponents()) {
+            if (component instanceof JLabel label) {
+                String labelName = label.getName();
+                if (labelName != null && labelName.equals(plant.getName())) {
+                    return label;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void paintShots() {
+        List<shoot> shoots = board.getShoots();
+        for (shoot s : shoots) {
+            JLabel shootLabel = s.getShootLabel();
+            s.setX(s.getX() + 10);
+            shootLabel.setLocation(s.getX(), s.getY());
+            shootLabel.setBounds(s.getX(), s.getY(), shootLabel.getIcon().getIconWidth(), shootLabel.getIcon().getIconHeight());
+            background.add(shootLabel);
+        }
     }
 }
 

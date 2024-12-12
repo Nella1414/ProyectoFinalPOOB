@@ -4,12 +4,13 @@ import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import domain.board.Board;
 
 public class Sunflower extends SupportPlant {
 
-    public Sunflower(Board board, Point position) {
-        super("Sunflower", 50, 300, "SupportPlant", 20000, position, "assets/Images/inGame/plants/SunFlower.gif",board); // 20 segundos = 20000 ms
+    public Sunflower(int x, int y, Board board, Point position) {
+        super(x, y, "Sunflower", 50, 300, "SupportPlant", 20000, position, "assets/Images/inGame/plants/SunFlower.gif", board); // 20 segundos = 20000 ms
         this.startAction();
     }
 
@@ -17,7 +18,7 @@ public class Sunflower extends SupportPlant {
     public void action() {
         if (board != null) {
             board.addSun(25);
-        System.out.println(this.getName() + " ha generado 25 soles.");
+            System.out.println(this.getName() + " ha generado 25 soles.");
         }
     }
 
