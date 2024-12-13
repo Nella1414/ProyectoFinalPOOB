@@ -247,10 +247,14 @@ public abstract class Zombie extends Entity {
             gameWindow.removeZombieLabel(zombieLabel); // Remove the existing label if it exists
         }
         zombieLabel = new JLabel();
-        ImageIcon zombieIcon = new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/zombies/ConeheadZombie.gif"));
+        ImageIcon zombieIcon = new ImageIcon(getClass().getClassLoader().getResource(getImagePath()));
         zombieLabel.setIcon(zombieIcon);
         zombieLabel.setBounds(getX(), getY(), zombieIcon.getIconWidth(), zombieIcon.getIconHeight());
         gameWindow.addZombieLabel(this, zombieLabel);
+    }
+
+    public String getImagePath() {
+        return "assets/Images/inGame/zombies/" + getName() + ".gif";
     }
 
     public JLabel getZombieLabel() {

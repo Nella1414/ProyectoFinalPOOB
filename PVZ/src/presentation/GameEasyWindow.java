@@ -216,8 +216,7 @@ public class GameEasyWindow extends JFrame {
         BoardDay board = new BoardDay(1000);
         List<Entity> entities = List.of(new Sunflower(0, 0, board, new Point(0, 0)), new Peashooter(0, 0, board, new Point(0, 0)), new WallNut(0, 0, board, new Point(0, 0)), new PotatoMine(0, 0, board, new Point(0, 0)), new ECIPlant(0, 0, board, new Point(0, 0)));
         for (Entity entity : entities) {
-            if (entity instanceof Peashooter) {
-                Peashooter peashooter = (Peashooter) entity;
+            if (entity instanceof Peashooter peashooter) {
                 peashooter.stopShooting();
 
             }
@@ -295,11 +294,21 @@ public class GameEasyWindow extends JFrame {
     }
 
     public void spawnRandomZombie() {
+        // List of zombie factories
+        List<ZombieFactory> zombieFactories = List.of(
+                new BasicZombieFactory(),
+                new DuckyZombieFactory()
+        );
+
         Random random = new Random();
         int row = random.nextInt(5); // Assuming there are 5 rows
         int gridY = 210 + (row * gridSize);
         int gridX = maxX; // Zombies appear at the last position of the grid
-        Zombie zombie = new BasicZombie(gridX, gridY, board, new Point(gridX, gridY), this);
+
+        // Randomly select a factory
+        ZombieFactory selectedFactory = zombieFactories.get(random.nextInt(zombieFactories.size()));
+        Zombie zombie = selectedFactory.createZombie(gridX, gridY, board, new Point(gridX, gridY), this);
+
         Point position = new Point(gridX, gridY);
         board.addZombie(zombie, position);
     }
@@ -323,6 +332,42 @@ public class GameEasyWindow extends JFrame {
             timer.start();
         }
     }
+//
+//    private void restartGame() {
+//        dispose();
+//
+//        SwingUtilities.invokeLater(() -> {
+//            new GameEasyWindow(difficulty, entitiesForHud, new BoardDay(1000)).setVisible(true);
+//        });
+//    }
+//
+//    private void showGameOverScreen() {
+//        pauseGame();
+//
+//        JPanel gameOverPanel = new JPanel();
+//        gameOverPanel.setLayout(null);
+//        gameOverPanel.setBounds(0, 0, getWidth(),getHeight());
+//
+//        JLabel gameOverBackground = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("assets/Images/inGame/board/GameOver.png")));
+//        gameOverBackground.setBounds(0, 0, getWidth(), getHeight());
+//        gameOverPanel.add(gameOverBackground);
+//
+//        JButton restartButton = new JButton("Reiniciar");
+//        restartButton.setBounds(getWidth() / 2 - 50, getHeight() / 2 + 100, 100, 50);
+//        restartButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                restartGame();
+//            }
+//        });
+//
+//        gameOverBackground.add(restartButton);
+//
+//        setContentPane(gameOverPanel);
+//        revalidate();
+//        repaint();
+//    }
+//
 
     public void updateAllZombiePositions() {
         ArrayList<Zombie> zombiesToRemove = board.getZombiesList();
@@ -332,6 +377,11 @@ public class GameEasyWindow extends JFrame {
             JLabel zombieLabel = zombie.getZombieLabel();
             if (zombieLabel != null) {
                 zombieLabel.setBounds(zombie.getX(), zombie.getY(), zombieLabel.getWidth(), zombieLabel.getHeight());
+//                if (zombie.getX() < minX) {
+//                    System.out.println("Iniciando again");
+//                    showGameOverScreen();
+//                    break;
+//                }
             }
         }
     }
