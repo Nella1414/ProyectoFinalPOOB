@@ -1,5 +1,6 @@
 package presentation;
 
+import domain.board.Board;
 import domain.board.BoardDay;
 import domain.entities.*;
 
@@ -24,6 +25,7 @@ public class GameModesWindow extends JFrame {
     private String selectedDifficulty;
     private int initialSuns;
     private List<Entity> entities;
+    private Board board;
 
     public GameModesWindow() {
         playBackgroundMusic("assets/Sounds/1.StartInGameMusic.wav");
@@ -36,6 +38,8 @@ public class GameModesWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         background.setLayout(null);
+        this.board = new BoardDay(0);
+        this.entities = List.of(new Sunflower(0, 0, board, new Point(0, 0)), new Peashooter(0, 0, board, new Point(0, 0)), new WallNut(0, 0, board, new Point(0, 0)), new PotatoMine(0, 0, board, new Point(0, 0)), new ECIPlant(0, 0, board, new Point(0, 0)));
 
         // Create a custom JComboBox
         String[] gameModes = {"Novato", "Medio", "Experto"};
@@ -138,9 +142,24 @@ public class GameModesWindow extends JFrame {
                 if (isPixelVisible(e, startButton, originalImage2)) {
                     playClickSound("assets/Sounds/2.Click.wav");
 //                    showLoadingScreenAndOpenBoard();
+                    openGameEasyWindow();
                 }
             }
         };
+    }
+
+
+    private void openGameEasyWindow() {
+        int initialSuns;
+        try {
+            initialSuns = Integer.parseInt(sunsField.getText());
+        } catch (NumberFormatException e) {
+            initialSuns = 200; // Valor por defecto en caso de error
+        }
+        Board board = new BoardDay(initialSuns);// Create a new Board instance
+        GameEasyWindow gameEasyWindow = new GameEasyWindow(selectedDifficulty, entities, board);
+        gameEasyWindow.setVisible(true);
+        dispose();
     }
 
     private boolean isPixelVisible(MouseEvent e, JLabel label, BufferedImage image) {

@@ -34,11 +34,11 @@ public class Peashooter extends OffensivePlant {
 
     @Override
     public void attack(Board board) {
-        int peashooterRow = board.getRowFromYForPlants(this.getPosition().y);
-        Zombie target = board.findClosestZombieInRow(peashooterRow, this.getPosition().x);
+        int peashooterRow = board.getRowFromYForPlants(this.getY());
+        Zombie target = board.findClosestZombieInRow(peashooterRow, this.getX());
 
         if (target != null && target.isAlive()) {
-            int targetRow = board.getRowFromYForZombies(target.getPosition().y);
+            int targetRow = board.getRowFromYForZombies(target.getY());
 
             if (targetRow == peashooterRow) {
                 target.receiveDamage(this.getDamage());

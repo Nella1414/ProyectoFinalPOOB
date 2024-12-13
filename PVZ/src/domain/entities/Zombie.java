@@ -77,7 +77,7 @@ public abstract class Zombie extends Entity {
 //        System.out.println(plantsInRow);
         for (Plant plant : plantsInRow) {
             System.out.println(plant.getX() + " " + plant.getY() + " " + nextX + " " + currentY);
-            if (Math.abs(plant.getX() - nextX) < 7 && Math.abs(plant.getY() - currentY) < 70) {
+            if (Math.abs(plant.getX() - nextX) < 7 && Math.abs(plant.getY() - currentY) < 68) {
                 System.out.println("holamundo");
                 System.out.println(this.getName() + " encontró una planta en su camino.");
                 stopMoving();

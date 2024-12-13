@@ -1,10 +1,7 @@
 package domain.board;
 
 
-import domain.entities.Plant;
-import domain.entities.PotatoMine;
-import domain.entities.Zombie;
-import domain.entities.shoot;
+import domain.entities.*;
 import domain.tools.LawnMower;
 import domain.tools.Tool;
 
@@ -170,6 +167,11 @@ public abstract class Board {
     }
 
     public void removePlantList(Plant plant) {
+        if (plant instanceof Peashooter) {
+            Peashooter peaShooter = (Peashooter) plant;
+            peaShooter.stopAttacking();
+            peaShooter.stopShooting();
+        }
         plantsList.remove(plant);
     }
 
