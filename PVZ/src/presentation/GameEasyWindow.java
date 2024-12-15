@@ -227,6 +227,23 @@ public class GameEasyWindow extends JFrame {
         });
     }
 
+    // In GameEasyWindow class
+    public void setSelectedPlant(Entity selectedPlant) {
+        this.selectedPlant = selectedPlant;
+    }
+
+    public void mousePressed(MouseEvent e) {
+        // Method implementation
+    }
+
+    public List<Entity> getEntitiesInGame() {
+        return entitiesInGame;
+    }
+
+    public void setShovelSelected(boolean isShovelSelected) {
+        this.isShovelSelected = isShovelSelected;
+    }
+
     // GameEasyWindow.java
 
     public JLabel getZombieLabel(Zombie zombie) {
@@ -295,10 +312,7 @@ public class GameEasyWindow extends JFrame {
 
     public void spawnRandomZombie() {
         // List of zombie factories
-        List<ZombieFactory> zombieFactories = List.of(
-                new BasicZombieFactory(),
-                new DuckyZombieFactory()
-        );
+        List<ZombieFactory> zombieFactories = List.of(new BasicZombieFactory(), new DuckyZombieFactory());
 
         Random random = new Random();
         int row = random.nextInt(5); // Assuming there are 5 rows
@@ -482,7 +496,7 @@ public class GameEasyWindow extends JFrame {
         healthCheckTimer.start();
     }
 
-    private void checkPlantHealth() {
+    public void checkPlantHealth() {
         for (Plant plant : board.getPlantsList()) {
             if (plant.getLife() <= 0) {
                 removePlantFromInterface(plant);
