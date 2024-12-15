@@ -109,11 +109,13 @@ void testRemoveZombie() {
 
     @Test
     void testCheckPotatoMine() {
-        // Implementar un test para verificar el comportamiento de la mina de papa
+        // Proximo test
+        // :p
     }
 
     @Test
     void testUpdateZombiesWhenLawnMower() {
-        // Implementar un test para verificar el comportamiento de los zombis cuando se activa la podadora
+        // Proximo test
+        // :d
     }
 }
